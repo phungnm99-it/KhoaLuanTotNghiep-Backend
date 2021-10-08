@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Google.Apis.Auth;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using WebAPI.ModelDTO;
 
 namespace WebAPI.Utils
@@ -12,9 +16,13 @@ namespace WebAPI.Utils
     public class JwtUtils : IJwtUtils
     {
         private readonly AppSettings _appSettings;
-        public JwtUtils(IOptions<AppSettings> appSettings)
+        private readonly IConfiguration _configuration;
+        private readonly IConfigurationSection _goolgeSettings;
+        public JwtUtils(IOptions<AppSettings> appSettings, IConfiguration configuration)
         {
             _appSettings = appSettings.Value;
+            _configuration = configuration;
+            _goolgeSettings = _configuration.GetSection("GoogleAuthSettings");
         }
         public string GenerateToken(UserDTO user)
         {
@@ -54,6 +62,23 @@ namespace WebAPI.Utils
                 return int.Parse(userId.Value);
             }
             catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string tokenId)
+        {
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string>() { _goolgeSettings.GetSection("clientId").Value }
+                };
+                var payload = await GoogleJsonWebSignature.ValidateAsync(tokenId, settings);
+                return payload;
+            }
+            catch(Exception ex)
             {
                 return null;
             }
