@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using WebAPI.DataModel;
 using WebAPI.Helper;
@@ -18,7 +21,6 @@ namespace WebAPI.Controllers
     {
         private IUserService _userService { get; set; }
         private IJwtUtils _jwtUtils { get; set; }
-
         public UserController(IUserService userService, IJwtUtils jwtUtils)
         {
             _userService = userService;
@@ -43,10 +45,17 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [Route("loginwithgoogle")]
         [HttpPost]
-        public IActionResult LoginWithGoogle([FromBody] object token)
+        public async Task<IActionResult> LoginWithGoogle([FromBody]JsonElement body)
         {
+            string token = JsonSerializer.Serialize(body);
+            var payload = await _jwtUtils.VerifyGoogleToken(token.Substring(1,token.Length-2));
+            if (payload == null)
+                return BadRequest("Invalid External Authentication.");
 
-            return new OkObjectResult(null);
+            var user = _userService.Authenticate("user", "user");
+
+            var generatedToken = _jwtUtils.GenerateToken(user);
+            return Ok(new { code = "200", token = generatedToken, email = payload.Email});
         }
 
         [Authorize(Roles = Role.Admin)]
@@ -73,5 +82,6 @@ namespace WebAPI.Controllers
         {
             return new OkObjectResult(new { code = "200", data = HttpContext.Items["User"] });
         }
+
     }
 }

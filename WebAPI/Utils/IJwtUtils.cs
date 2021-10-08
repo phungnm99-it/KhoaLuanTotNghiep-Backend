@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Apis.Auth;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,5 +11,9 @@ namespace WebAPI.Utils
     {
         public string GenerateToken(UserDTO user);
         public int? ValidateToken(string token);
+
+        public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string token) {
+            return null;
+        }
     }
 }
