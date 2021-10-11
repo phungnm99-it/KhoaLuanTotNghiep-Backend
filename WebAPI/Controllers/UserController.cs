@@ -35,11 +35,11 @@ namespace WebAPI.Controllers
             var user = _userService.Authenticate(model.Username, model.Password);
             if (user == null)
             {
-                return new OkObjectResult(new { code = "200", message = "Username or password wrong!" });
+                return new ObjectResult(new { code = "401", message = "Username or password is wrong!" });
             }
             var token = _jwtUtils.GenerateToken(user);
 
-            return new OkObjectResult(new { code = "200", token = token });
+            return new ObjectResult(new { code = "200", token = token });
         }
 
         [AllowAnonymous]
@@ -66,7 +66,6 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = _userService.GetAll() });
         }
 
-
         [Authorize(Roles = Role.Admin)]
         [Route("getbyid")]
         [HttpGet]
@@ -82,6 +81,5 @@ namespace WebAPI.Controllers
         {
             return new OkObjectResult(new { code = "200", data = HttpContext.Items["User"] });
         }
-
     }
 }
