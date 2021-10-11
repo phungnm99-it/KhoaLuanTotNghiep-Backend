@@ -12,8 +12,6 @@ namespace WebAPI.Utils
         public string GenerateToken(UserDTO user);
         public int? ValidateToken(string token);
 
-        public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string token) {
-            return null;
-        }
+        public Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string token);
     }
 }
