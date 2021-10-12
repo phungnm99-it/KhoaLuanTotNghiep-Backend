@@ -27,7 +27,34 @@ namespace WebAPI.RepositoryService.Service
             _mapper = mapper;
             _uploadImage = uploadImageUtils;
         }
-        
+
+        public async Task<UserDTO> AddAdminAccount(RegisterModel model)
+        {
+            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email)
+                .FirstOrDefaultAsync();
+            if (checkEmailExist != null)
+                return null;
+            User user = new User();
+            user = _mapper.Map<User>(model);
+            user.IsEmailConfirmed = false;
+            if (model.Image != null && model.Image.Length != 0)
+            {
+                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email) as ImageUploadResult;
+                user.ImageUrl = result.Url.ToString();
+            }
+            user.RoleId = Helper.Role.AdminRoleId;
+            user.CreatedDate = DateTime.Now;
+            user.IsDeleted = false;
+            user.IsDisable = false;
+
+            _unitOfWork.UserRepository.CreateUser(user);
+            await _unitOfWork.SaveAsync();
+            var createdUser = await _unitOfWork.UserRepository.FindByCondition(
+                user => user.Email == model.Email).FirstOrDefaultAsync();
+            createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
+            return _mapper.Map<UserDTO>(createdUser);
+        }
+
         public async Task<UserDTO> AuthenticateAsync(string username, string password)
         {
             var user = await _unitOfWork.UserRepository
@@ -73,6 +100,14 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<UserDTO>(user);
         }
 
+        public async Task ChangePasswordAsync(int userId, string newPassword)
+        {
+            var user = await _unitOfWork.UserRepository.FindByCondition(
+                user => user.Id == userId).FirstAsync();
+            user.Password = newPassword;
+            await _unitOfWork.SaveAsync();
+        }
+
         public async Task<IEnumerable<UserDTO>> GetAllUserAsync()
         {
             List<UserDTO> list = new List<UserDTO>();
@@ -116,5 +151,7 @@ namespace WebAPI.RepositoryService.Service
             createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
             return _mapper.Map<UserDTO>(createdUser);
         }
+
+
     }
 }
