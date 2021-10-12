@@ -12,5 +12,10 @@ namespace WebAPI.Helper
         public const string Admin = "Admin";
         public const string User = "User";
         public const string Admins = "SuperAdmin, Admin";
+
+        public const int SuperAdminRoleId = 1;
+        public const int AdminRoleId = 2;
+        public const int ShipperRoleId = 3;
+        public const int UserRoleId = 4;
     }
 }

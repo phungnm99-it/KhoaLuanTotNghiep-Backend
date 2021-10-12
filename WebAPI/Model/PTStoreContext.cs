@@ -171,7 +171,6 @@ namespace WebAPI.Model
                 entity.Property(e => e.ImageUrl).IsUnicode(false);
 
                 entity.Property(e => e.Password)
-                    .IsRequired()
                     .IsUnicode(false);
 
                 entity.Property(e => e.PhoneNumber).IsUnicode(false);
