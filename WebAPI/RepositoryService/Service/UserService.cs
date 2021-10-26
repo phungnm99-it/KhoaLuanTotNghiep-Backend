@@ -39,7 +39,8 @@ namespace WebAPI.RepositoryService.Service
             user.IsEmailConfirmed = false;
             if (model.Image != null && model.Image.Length != 0)
             {
-                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email) as ImageUploadResult;
+                string folder = "user/";
+                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email, folder) as ImageUploadResult;
                 user.ImageUrl = result.Url.ToString();
             }
             user.RoleId = Helper.Role.AdminRoleId;
@@ -136,7 +137,8 @@ namespace WebAPI.RepositoryService.Service
             user.IsEmailConfirmed = false;
             if (model.Image != null && model.Image.Length != 0)
             {
-                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email) as ImageUploadResult;
+                string folder = "user/";
+                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email, folder) as ImageUploadResult;
                 user.ImageUrl = result.Url.ToString();
             }
             user.RoleId = Helper.Role.UserRoleId;

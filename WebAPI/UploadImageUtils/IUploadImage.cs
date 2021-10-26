@@ -9,6 +9,6 @@ namespace WebAPI.UploadImageUtils
 {
     public interface IUploadImage
     {
-        Task<object> UploadImage(IFormFile image, string imageName);
+        Task<object> UploadImage(IFormFile image, string imageName, string folder);
     }
 }

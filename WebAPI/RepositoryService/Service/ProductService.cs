@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 using WebAPI.Model;
 using WebAPI.ModelDTO;
 using WebAPI.RepositoryService.Interface;
@@ -21,12 +22,14 @@ namespace WebAPI.RepositoryService.Service
             _mapper = mapper;
         }
 
-        public async Task CreateProductAsync(ProductDTO product)
+        public async Task CreateProductAsync(ProductModel productModel)
         {
-            Product prd = new Product();
-            prd = _mapper.Map<Product>(product);
-            prd.Id = 1;
-            prd.Stock = 0;
+            
+        }
+
+        private async Task<bool> IsProductNameExist(string name)
+        {
+
         }
 
         public async Task<IEnumerable<ProductDTO>> GetAllProductAsync()

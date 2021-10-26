@@ -31,6 +31,7 @@ namespace WebAPI.Model
             modelBuilder.Entity<Brand>(entity =>
             {
                 entity.Property(e => e.Name).IsUnicode(false);
+                entity.Property(e => e.ImageUrl).IsUnicode(false);
             });
 
             modelBuilder.Entity<Feedback>(entity =>
@@ -105,6 +106,12 @@ namespace WebAPI.Model
 
                 entity.Property(e => e.Cpu)
                     .HasColumnName("CPU");
+
+                entity.Property(e => e.Gpu)
+                    .HasColumnType("GPU");
+
+                entity.Property(e => e.Gps)
+                    .HasColumnName("GPS");
 
                 entity.Property(e => e.Rom)
                     .IsUnicode(false)

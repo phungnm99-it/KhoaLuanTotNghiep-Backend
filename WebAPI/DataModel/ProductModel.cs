@@ -1,25 +1,18 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace WebAPI.Model
+namespace WebAPI.DataModel
 {
-    public partial class Product
+    public class ProductModel
     {
-        public Product()
-        {
-            OrderDetails = new HashSet<OrderDetail>();
-            Reviews = new HashSet<Review>();
-        }
-
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string ImageUrl { get; set; }
-        public int? Stock { get; set; }
+        public IFormFile Image { get; set; }
         public string Status { get; set; }
         public decimal Price { get; set; }
-        public int? BrandId { get; set; }
+        public string BrandName { get; set; }
         public string Cpu { get; set; }
         public string Gpu { get; set; }
         public string ScreenResolution { get; set; }
@@ -35,13 +28,5 @@ namespace WebAPI.Model
         public string Sim { get; set; }
         public string Wifi { get; set; }
         public string Gps { get; set; }
-        public bool? IsSale { get; set; }
-        public decimal CurrentPrice { get; set; }
-        public bool? IsFeatured { get; set; }
-        public bool? IsDeleted { get; set; }
-
-        public virtual Brand Brand { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-        public virtual ICollection<Review> Reviews { get; set; }
     }
 }

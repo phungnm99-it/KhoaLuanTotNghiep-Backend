@@ -10,7 +10,7 @@ namespace WebAPI.UploadImageUtils
 {
     public class UploadImageWithCloudinary : IUploadImage
     {
-        public async Task<object> UploadImage(IFormFile image, string imageName)
+        public async Task<object> UploadImage(IFormFile image, string imageName, string folder)
         {
             Account account = new Account(
                 "dobsh4rbw",
@@ -21,7 +21,7 @@ namespace WebAPI.UploadImageUtils
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(image.FileName, image.OpenReadStream()),
-                PublicId = imageName.Split(".")[0]
+                PublicId = folder + imageName.Split(".")[0] + DateTime.Now.ToString("MMddyyhhmmss")
             };
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
 

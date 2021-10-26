@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 using WebAPI.Model;
 using WebAPI.ModelDTO;
 
@@ -13,6 +14,6 @@ namespace WebAPI.RepositoryService.Interface
 
         public Task<IEnumerable<ProductDTO>> GetAllProductAsync();
 
-        public Task CreateProductAsync(ProductDTO product);
+        public Task CreateProductAsync(ProductModel productModel);
     }
 }
