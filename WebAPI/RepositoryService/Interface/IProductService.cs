@@ -18,5 +18,7 @@ namespace WebAPI.RepositoryService.Interface
         public Task<ProductDTO> CreateProductAsync(ProductModel productModel);
 
         //public Task<string> Modify(IFormFile file);
+
+        public Task<ProductDTO> UpdateProductAsync();
     }
 }
