@@ -19,6 +19,10 @@ namespace WebAPI.AutoMapper
                 .ReverseMap();
 
             CreateMap<ProductModel, Product>();
+
+            CreateMap<Product, ProductStockManager>();
+
+            CreateMap<Product, ProductPriceManager>();
         }
     }
 }

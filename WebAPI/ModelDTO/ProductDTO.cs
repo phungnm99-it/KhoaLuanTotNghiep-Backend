@@ -10,6 +10,7 @@ namespace WebAPI.ModelDTO
         public int Id { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
+        public string Status { get; set; }
         public decimal Price { get; set; }
         public string BrandName { get; set; }
         public string Cpu { get; set; }
@@ -28,5 +29,7 @@ namespace WebAPI.ModelDTO
         public string Wifi { get; set; }
         public string Gps { get; set; }
         public decimal CurrentPrice { get; set; }
+        public bool IsSale { get; set; }
+        public bool IsFeatured { get; set; }
     }
 }

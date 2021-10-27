@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
             _brandService = brandService;
         }
 
-        [Route("getAll")]
+        [Route("")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

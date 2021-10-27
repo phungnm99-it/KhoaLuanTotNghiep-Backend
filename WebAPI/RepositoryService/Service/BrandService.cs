@@ -56,7 +56,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<BrandDTO> GetBrandByIdAsync(int brandId)
         {
             var brand = await _unitOfWork.BrandRepository.GetBrandByIdAsync(brandId);
-            if (brand.IsDeleted == true) return null;
+            if (brand == null || brand.IsDeleted == true) return null;
             return _mapper.Map<BrandDTO>(brand);
         }
 
