@@ -21,18 +21,7 @@ namespace WebAPI.Repository
         }
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            try
-            {
-                var result = this.RepositoryContext.Set<T>()
-                .Where(expression).AsNoTracking();
-                return result;
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-
-
+            return this.RepositoryContext.Set<T>().Where(expression);
         }
         public void Create(T entity)
         {

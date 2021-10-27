@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 using WebAPI.ModelDTO;
 using WebAPI.RepositoryService.Interface;
 
@@ -35,10 +37,28 @@ namespace WebAPI.Controllers
 
         [Route("create")]
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductDTO product)
+        public async Task<IActionResult> CreateProduct([FromForm] ProductModel productModel)
         {
-            var products = await _service.GetAllProductAsync();
-            return new ObjectResult(new { code = 200, data = products });
+            var product = await _service.CreateProductAsync(productModel);
+            if(product==null)
+            {
+                return new ObjectResult(new { code = 401, message = "Error!" });
+            }
+            return new ObjectResult(new { code = 200, data = product });
         }
+
+        //[Route("fix")]
+        //[HttpPost]
+        //public async Task<IActionResult> FixProduct([FromForm] IFormFile file)
+        //{
+        //    var product = await _service.Modify(file);
+        //    if (product == null)
+        //    {
+        //        return new ObjectResult(new { code = 401, message = "Error!" });
+        //    }
+        //    return new ObjectResult(new { code = 200, data = product });
+        //}
+
+
     }
 }

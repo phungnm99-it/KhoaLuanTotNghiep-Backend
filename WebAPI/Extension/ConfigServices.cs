@@ -11,6 +11,7 @@ using WebAPI.Repository.Interface;
 using WebAPI.RepositoryService.Interface;
 using WebAPI.RepositoryService.Service;
 using WebAPI.UnitOfWorks;
+using WebAPI.UploadImageUtils;
 using WebAPI.Utils;
 
 namespace WebAPI.Extension
@@ -30,10 +31,16 @@ namespace WebAPI.Extension
             services.AddScoped<PTStoreContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
 
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IBrandService, BrandService>();
+
+
+            services.AddScoped<IUploadImage, UploadImageWithCloudinary>();
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 using WebAPI.Model;
 using WebAPI.ModelDTO;
 
@@ -16,6 +17,8 @@ namespace WebAPI.AutoMapper
                 .ForMember(destination => destination.BrandName,
                 options => options.MapFrom(source => source.Brand.Name))
                 .ReverseMap();
+
+            CreateMap<ProductModel, Product>();
         }
     }
 }

@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebAPI.ModelDTO
+namespace WebAPI.DataModel
 {
-    public class ProductDTO
+    public class ProductModel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string ImageUrl { get; set; }
-        public decimal Price { get; set; }
+        public IFormFile Image { get; set; }
         public string BrandName { get; set; }
         public string Cpu { get; set; }
         public string Gpu { get; set; }
@@ -27,6 +26,5 @@ namespace WebAPI.ModelDTO
         public string Sim { get; set; }
         public string Wifi { get; set; }
         public string Gps { get; set; }
-        public decimal CurrentPrice { get; set; }
     }
 }
