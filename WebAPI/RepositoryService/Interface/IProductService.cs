@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace WebAPI.RepositoryService.Interface
 
         public Task<IEnumerable<ProductDTO>> GetAllProductAsync();
 
-        public Task CreateProductAsync(ProductModel productModel);
+        public Task<ProductDTO> CreateProductAsync(ProductModel productModel);
+
+        //public Task<string> Modify(IFormFile file);
     }
 }
