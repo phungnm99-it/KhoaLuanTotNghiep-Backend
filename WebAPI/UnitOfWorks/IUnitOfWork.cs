@@ -12,6 +12,8 @@ namespace WebAPI.UnitOfWorks
         IUserRepository UserRepository { get; set; }
 
         IBrandRepository BrandRepository { get; set; }
+
+        ISubscriberRepository SubscriberRepository { get; set; }
         Task SaveAsync();
     }
 }

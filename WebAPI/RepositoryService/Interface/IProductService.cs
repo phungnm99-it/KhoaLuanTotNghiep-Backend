@@ -13,6 +13,8 @@ namespace WebAPI.RepositoryService.Interface
     {
         public Task<ProductDTO> GetProductByIdAsync(int productId);
 
+        public Task<IEnumerable<ProductDTO>> GetAllSellingProductsAsync();
+
         public Task<IEnumerable<ProductDTO>> GetAllProductsAsync();
 
         public Task<ProductDTO> CreateProductAsync(ProductModel productModel);
