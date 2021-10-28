@@ -1,44 +1,159 @@
-﻿using System;
+﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 using WebAPI.Helper;
+using WebAPI.Model;
 using WebAPI.ModelDTO;
 using WebAPI.RepositoryService.Interface;
+using WebAPI.UnitOfWorks;
+using WebAPI.UploadImageUtils;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace WebAPI.RepositoryService.Service
 {
     public class UserService : IUserService
     {
-        // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<UserDTO> _users = new List<UserDTO>
+        private IUnitOfWork _unitOfWork;
+        private IUploadImage _uploadImage;
+        private IMapper _mapper;
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUploadImage uploadImageUtils)
         {
-            new UserDTO { Id = 1, FirstName = "Admin", LastName = "User", Username = "admin", Password = "admin", Role = Role.Admin },
-            new UserDTO { Id = 2, FirstName = "Normal", LastName = "User", Username = "user", Password = "user", Role = Role.User }
-        };
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _uploadImage = uploadImageUtils;
+        }
 
-        
-
-        public UserDTO Authenticate(string username, string password)
+        public async Task<UserDTO> AddAdminAccount(RegisterModel model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
+            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email)
+                .FirstOrDefaultAsync();
+            if (checkEmailExist != null)
+                return null;
+            User user = new User();
+            user = _mapper.Map<User>(model);
+            user.IsEmailConfirmed = false;
+            if (model.Image != null && model.Image.Length != 0)
+            {
+                string folder = "user/";
+                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email, folder) as ImageUploadResult;
+                user.ImageUrl = result.Url.ToString();
+            }
+            user.RoleId = Helper.Role.AdminRoleId;
+            user.CreatedDate = DateTime.Now;
+            user.IsDeleted = false;
+            user.IsDisable = false;
+
+            _unitOfWork.UserRepository.CreateUser(user);
+            await _unitOfWork.SaveAsync();
+            var createdUser = await _unitOfWork.UserRepository.FindByCondition(
+                user => user.Email == model.Email).FirstOrDefaultAsync();
+            createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
+            return _mapper.Map<UserDTO>(createdUser);
+        }
+
+        public async Task<UserDTO> AuthenticateAsync(string username, string password)
+        {
+            var user = await _unitOfWork.UserRepository
+                .FindByCondition(user => user.Username == username && user.Password == password)
+                .FirstOrDefaultAsync();
 
             // return null if user not found
             if (user == null)
                 return null;
 
-            return user;
+            user = await _unitOfWork.UserRepository.GetUserByIdAsync(user.Id);
+            return _mapper.Map<UserDTO>(user);
         }
 
-        public IEnumerable<UserDTO> GetAll()
+        public async Task<UserDTO> AuthenticateGoogleAsync(Payload payload)
         {
-            return _users;
+            var user = await _unitOfWork.UserRepository.FindByCondition(
+                user => user.Email == payload.Email).FirstOrDefaultAsync();
+
+            if(user == null)
+            {
+                User userGoogle = new User();
+                userGoogle.Username = payload.Email;
+                userGoogle.FullName = payload.Name;
+                userGoogle.Gender = "";
+                userGoogle.IsEmailConfirmed = true;
+                userGoogle.Email = payload.Email;
+                userGoogle.Birthday = DateTime.Now;
+                userGoogle.ImageUrl = payload.Picture;
+                userGoogle.CreatedDate = DateTime.Now;
+                userGoogle.RoleId = Helper.Role.UserRoleId;
+                userGoogle.IsDeleted = false;
+                userGoogle.IsDisable = false;
+
+                _unitOfWork.UserRepository.CreateUser(userGoogle);
+                await _unitOfWork.SaveAsync();
+                var createdUser = await _unitOfWork.UserRepository.FindByCondition(
+                    user => user.Email == payload.Email).FirstOrDefaultAsync();
+                createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
+                return _mapper.Map<UserDTO>(createdUser);
+            }
+            user = await _unitOfWork.UserRepository.GetUserByIdAsync(user.Id);
+            return _mapper.Map<UserDTO>(user);
         }
 
-        public UserDTO GetById(int id)
+        public async Task ChangePasswordAsync(int userId, string newPassword)
         {
-            var user = _users.FirstOrDefault(x => x.Id == id);
-            return user;
+            var user = await _unitOfWork.UserRepository.FindByCondition(
+                user => user.Id == userId).FirstAsync();
+            user.Password = newPassword;
+            await _unitOfWork.SaveAsync();
         }
+
+        public async Task<IEnumerable<UserDTO>> GetAllUserAsync()
+        {
+            List<UserDTO> list = new List<UserDTO>();
+            var users = await _unitOfWork.UserRepository.GetAllUsersAsync();
+            foreach(var user in users)
+            {
+                list.Add(_mapper.Map<UserDTO>(user));
+            }
+            return list;
+        }
+
+        public async Task<UserDTO> GetByIdAsync(int id)
+        {
+            var user = await _unitOfWork.UserRepository.GetUserByIdAsync(id);
+            return _mapper.Map<UserDTO>(user);
+        }
+
+        public async Task<UserDTO> RegisterAsync(RegisterModel model)
+        {
+            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email)
+                .FirstOrDefaultAsync();
+            if (checkEmailExist != null)
+                return null;
+            User user = new User();
+            user = _mapper.Map<User>(model);
+            user.IsEmailConfirmed = false;
+            if (model.Image != null && model.Image.Length != 0)
+            {
+                string folder = "user/";
+                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email, folder) as ImageUploadResult;
+                user.ImageUrl = result.Url.ToString();
+            }
+            user.RoleId = Helper.Role.UserRoleId;
+            user.CreatedDate = DateTime.Now;
+            user.IsDeleted = false;
+            user.IsDisable = false;
+
+            _unitOfWork.UserRepository.CreateUser(user);
+            await _unitOfWork.SaveAsync();
+            var createdUser = await _unitOfWork.UserRepository.FindByCondition(
+                user => user.Email == model.Email).FirstOrDefaultAsync();
+            createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
+            return _mapper.Map<UserDTO>(createdUser);
+        }
+
+
     }
 }

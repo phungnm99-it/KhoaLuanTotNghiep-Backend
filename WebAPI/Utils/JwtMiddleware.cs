@@ -25,7 +25,7 @@ namespace WebAPI.Utils
             var userId = jwtUtils.ValidateToken(token);
             if(userId != null)
             {
-                context.Items["User"] = userService.GetById(userId.Value);
+                context.Items["User"] = await userService.GetByIdAsync(userId.Value);
             }
             await _next(context);
         }
