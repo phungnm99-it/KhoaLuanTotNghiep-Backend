@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var products = await _service.GetAllProductsAsync();
+            var products = await _service.GetAllSellingProductsAsync();
             return new ObjectResult(new { code = 200, data = products });
         }
 

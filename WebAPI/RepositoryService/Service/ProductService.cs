@@ -67,10 +67,11 @@ namespace WebAPI.RepositoryService.Service
             return true;
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
+        public async Task<IEnumerable<ProductDTO>> GetAllSellingProductsAsync()
         {
             var products = await _unitOfWork.ProductRepository
-                .FindByCondition(index => index.IsDeleted == false)
+                .FindByCondition(index => index.IsDeleted == false
+                && (!index.Status.Equals("Ngừng kinh doanh")))
                 .Include(index=>index.Brand)
                 .ToListAsync();
             List<ProductDTO> list = new List<ProductDTO>();
@@ -333,6 +334,20 @@ namespace WebAPI.RepositoryService.Service
         {
             var products = await _unitOfWork.ProductRepository
                 .FindByCondition(index => index.Name.ToLower().Contains(productName.ToLower()))
+                .Include(index => index.Brand)
+                .ToListAsync();
+            List<ProductDTO> list = new List<ProductDTO>();
+            foreach (var product in products)
+            {
+                list.Add(_mapper.Map<ProductDTO>(product));
+            }
+            return list;
+        }
+
+        public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
+        {
+            var products = await _unitOfWork.ProductRepository
+                .FindByCondition(index => index.IsDeleted == false)
                 .Include(index => index.Brand)
                 .ToListAsync();
             List<ProductDTO> list = new List<ProductDTO>();
