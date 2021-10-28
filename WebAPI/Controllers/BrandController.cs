@@ -12,7 +12,7 @@ namespace WebAPI.Controllers
     [ApiController]
     public class BrandController : Controller
     {
-        private IBrandService _brandService { get; set; }
+        private IBrandService _brandService;
         public BrandController(IBrandService brandService)
         {
             _brandService = brandService;
