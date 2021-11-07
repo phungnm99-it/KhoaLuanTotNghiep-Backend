@@ -3,12 +3,13 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace WebAPI.Model
+namespace WebAPI.Models
 {
     public partial class User
     {
         public User()
         {
+            Feedbacks = new HashSet<Feedback>();
             OrderShippers = new HashSet<Order>();
             OrderUpdatedByNavigations = new HashSet<Order>();
             OrderUsers = new HashSet<Order>();
@@ -28,11 +29,13 @@ namespace WebAPI.Model
         public string Address { get; set; }
         public string ImageUrl { get; set; }
         public int? RoleId { get; set; }
+        public bool? IsGoogleLogin { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool? IsDisable { get; set; }
         public bool? IsDeleted { get; set; }
 
         public virtual Role Role { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<Order> OrderShippers { get; set; }
         public virtual ICollection<Order> OrderUpdatedByNavigations { get; set; }
         public virtual ICollection<Order> OrderUsers { get; set; }

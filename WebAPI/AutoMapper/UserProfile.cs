@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.DataModel;
-using WebAPI.Model;
+using WebAPI.Models;
 using WebAPI.ModelDTO;
 
 namespace WebAPI.AutoMapper

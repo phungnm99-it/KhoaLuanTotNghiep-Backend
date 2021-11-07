@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WebAPI.Extension;
+using WebAPI.Helper;
+using WebAPI.MailKit;
 using WebAPI.Utils;
 
 namespace WebAPI
@@ -24,6 +26,11 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.Configure<HashSettings>(Configuration.GetSection("HashPasswordSettings"));
+            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<ICustomHash, CustomHash>();
+
             services.AddAutoMapper(typeof(Startup));
             services.AddCors();
             services.AddControllers();

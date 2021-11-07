@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.DataModel;
-using WebAPI.Model;
+using WebAPI.Models;
 using WebAPI.ModelDTO;
 using WebAPI.RepositoryService.Interface;
 using WebAPI.UnitOfWorks;
@@ -77,7 +77,7 @@ namespace WebAPI.RepositoryService.Service
             List<ProductDTO> list = new List<ProductDTO>();
             foreach (var product in products)
             {
-                list.Add(_mapper.Map<ProductDTO>(product));
+                list.Add(mapToProductDTO(product));
             }
             return list;
         }
@@ -358,7 +358,32 @@ namespace WebAPI.RepositoryService.Service
             return list;
         }
 
-
+        private ProductDTO mapToProductDTO(Product product) => new ProductDTO
+        {
+            Id = product.Id,
+            Name = product.Name,
+            ImageUrl = product.ImageUrl,
+            Status = product.Status,
+            Price = product.Price,
+            Color = product.Color,
+            ScreenTech = product.ScreenTech,
+            Ram = product.Ram,
+            Rom = product.Rom,
+            Cpu = product.Cpu,
+            ScreenResolution = product.ScreenResolution,
+            ScreenSize = product.ScreenSize,
+            BackCamera = product.BackCamera,
+            FrontCamera = product.FrontCamera,
+            BrandName = product.Brand.Name,
+            Os = product.Os,
+            Gpu = product.Gpu,
+            Battery = product.Battery,
+            Sim = product.Sim,
+            Wifi = product.Wifi,
+            Gps = product.Gps,
+            IsFeatured = product.IsFeatured.Value,
+            IsSale = product.IsSale.Value
+        };
 
         //public async Task<string> Modify(IFormFile file)
         //{

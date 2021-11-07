@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.DataModel;
-using WebAPI.Model;
+using WebAPI.Models;
 using WebAPI.ModelDTO;
 
 namespace WebAPI.AutoMapper
@@ -13,16 +13,16 @@ namespace WebAPI.AutoMapper
     {
         public ProductProfile()
         {
-            CreateMap<Product, ProductDTO>()
-                .ForMember(destination => destination.BrandName,
-                options => options.MapFrom(source => source.Brand.Name))
-                .ReverseMap();
+            //CreateMap<Product, ProductDTO>()
+            //    .ForMember(destination => destination.BrandName,
+            //    options => options.MapFrom(source => source))
+            //    .ReverseMap();
 
-            CreateMap<ProductModel, Product>();
+            //CreateMap<ProductModel, Product>();
 
-            CreateMap<Product, ProductStockManager>();
+            //CreateMap<Product, ProductStockManager>();
 
-            CreateMap<Product, ProductPriceManager>();
+            //CreateMap<Product, ProductPriceManager>();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [Route("login")]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromForm] LoginModel model)
         {
             var user = await _userService.AuthenticateAsync(model.Username, model.Password);
             if (user == null)
@@ -114,11 +114,16 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200 });
         }
 
-        [Route("forgotPassword/{token}")]
-        [HttpGet]
-        public async Task<IActionResult> ForgotPassword(string token)
+        [AllowAnonymous]
+        [Route("resetPassword")]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordModel model)
         {
-            return null;
+            var result = await _userService.ResetNewPassword(model);
+            if (!result)
+                return new ObjectResult(new { code = "401", message = "Error" });
+
+            return new ObjectResult(new { code = "200", message = "Success" });
         }
     }
 }
