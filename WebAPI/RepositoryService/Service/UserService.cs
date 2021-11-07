@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.DataModel;
 using WebAPI.Helper;
-using WebAPI.Model;
+using WebAPI.Models;
 using WebAPI.ModelDTO;
 using WebAPI.RepositoryService.Interface;
 using WebAPI.UnitOfWorks;
@@ -21,11 +21,14 @@ namespace WebAPI.RepositoryService.Service
         private IUnitOfWork _unitOfWork;
         private IUploadImage _uploadImage;
         private IMapper _mapper;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUploadImage uploadImageUtils)
+        private ICustomHash _hashPassword;
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUploadImage uploadImageUtils,
+            ICustomHash hashPassword)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _uploadImage = uploadImageUtils;
+            _hashPassword = hashPassword;
         }
 
         public async Task<UserDTO> AddAdminAccount(RegisterModel model)
@@ -35,7 +38,8 @@ namespace WebAPI.RepositoryService.Service
             if (checkEmailExist != null)
                 return null;
             User user = new User();
-            user = _mapper.Map<User>(model);
+            user.Username = model.Username;
+            user.Password = _hashPassword.GetHashPassword(model.Password);
             user.IsEmailConfirmed = false;
             if (model.Image != null && model.Image.Length != 0)
             {
@@ -58,12 +62,17 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> AuthenticateAsync(string username, string password)
         {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return null;
             var user = await _unitOfWork.UserRepository
-                .FindByCondition(user => user.Username == username && user.Password == password)
+                .FindByCondition(user => user.Username == username)
                 .FirstOrDefaultAsync();
 
             // return null if user not found
             if (user == null)
+                return null;
+
+            if (user.Password != _hashPassword.GetHashPassword(password))
                 return null;
 
             user = await _unitOfWork.UserRepository.GetUserByIdAsync(user.Id);
@@ -78,13 +87,13 @@ namespace WebAPI.RepositoryService.Service
             if(user == null)
             {
                 User userGoogle = new User();
-                userGoogle.Username = payload.Email;
                 userGoogle.FullName = payload.Name;
                 userGoogle.Gender = "";
                 userGoogle.IsEmailConfirmed = true;
                 userGoogle.Email = payload.Email;
                 userGoogle.Birthday = DateTime.Now;
                 userGoogle.ImageUrl = payload.Picture;
+                userGoogle.IsGoogleLogin = true;
                 userGoogle.CreatedDate = DateTime.Now;
                 userGoogle.RoleId = Helper.Role.UserRoleId;
                 userGoogle.IsDeleted = false;
@@ -101,12 +110,14 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<UserDTO>(user);
         }
 
-        public async Task ChangePasswordAsync(int userId, string newPassword)
+        public async Task<bool> ChangePasswordAsync(int userId, string newPassword)
         {
             var user = await _unitOfWork.UserRepository.FindByCondition(
                 user => user.Id == userId).FirstAsync();
-            user.Password = newPassword;
+            if (user == null) return false;
+            user.Password = _hashPassword.GetHashPassword(newPassword);
             await _unitOfWork.SaveAsync();
+            return true;
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllUserAsync()
@@ -133,7 +144,8 @@ namespace WebAPI.RepositoryService.Service
             if (checkEmailExist != null)
                 return null;
             User user = new User();
-            user = _mapper.Map<User>(model);
+            user.Username = model.Username;
+            user.Password = _hashPassword.GetHashPassword(model.Password);
             user.IsEmailConfirmed = false;
             if (model.Image != null && model.Image.Length != 0)
             {
@@ -143,6 +155,7 @@ namespace WebAPI.RepositoryService.Service
             }
             user.RoleId = Helper.Role.UserRoleId;
             user.CreatedDate = DateTime.Now;
+            user.IsGoogleLogin = false;
             user.IsDeleted = false;
             user.IsDisable = false;
 
@@ -154,6 +167,22 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<UserDTO>(createdUser);
         }
 
-
+        public async Task<bool> ResetNewPassword(ResetPasswordModel model)
+        {
+            var users = await _unitOfWork.UserRepository.GetAllUsersAsync();
+            bool flag = false;
+            foreach (var user in users)
+            {
+                if(_hashPassword.GetHashResetPassword(user.Id) == model.HashId)
+                {
+                    flag = true;
+                    user.Password = _hashPassword.GetHashPassword(model.NewPassword);
+                    _unitOfWork.UserRepository.UpdateUser(user);
+                    await _unitOfWork.SaveAsync();
+                    break;
+                }
+            }
+            return flag;
+        }
     }
 }

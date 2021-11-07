@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace WebAPI.Model
+namespace WebAPI.Models
 {
     public partial class PTStoreContext : DbContext
     {
@@ -24,14 +24,16 @@ namespace WebAPI.Model
         public virtual DbSet<Subscriber> Subscribers { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<Brand>(entity =>
             {
-                entity.Property(e => e.Name).IsUnicode(false);
                 entity.Property(e => e.ImageUrl).IsUnicode(false);
+
+                entity.Property(e => e.Name).IsUnicode(false);
             });
 
             modelBuilder.Entity<Feedback>(entity =>
@@ -41,6 +43,11 @@ namespace WebAPI.Model
                 entity.Property(e => e.FeedbackTime).HasColumnType("datetime");
 
                 entity.Property(e => e.ReplyTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.RepliedByNavigation)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.RepliedBy)
+                    .HasConstraintName("FK__Feedbacks__Repli__75A278F5");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -58,17 +65,17 @@ namespace WebAPI.Model
                 entity.HasOne(d => d.Shipper)
                     .WithMany(p => p.OrderShippers)
                     .HasForeignKey(d => d.ShipperId)
-                    .HasConstraintName("FK__Orders__ShipperI__3A81B327");
+                    .HasConstraintName("FK__Orders__ShipperI__72C60C4A");
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.OrderUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
-                    .HasConstraintName("FK__Orders__UpdatedB__3B75D760");
+                    .HasConstraintName("FK__Orders__UpdatedB__73BA3083");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.OrderUsers)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Orders__UserId__398D8EEE");
+                    .HasConstraintName("FK__Orders__UserId__71D1E811");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -85,12 +92,18 @@ namespace WebAPI.Model
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__OrderDeta__Produ__3D5E1FD2");
+                    .HasConstraintName("FK__OrderDeta__Produ__66603565");
             });
 
             modelBuilder.Entity<Product>(entity =>
             {
+                entity.Property(e => e.Cpu).HasColumnName("CPU");
+
                 entity.Property(e => e.CurrentPrice).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.Gps).HasColumnName("GPS");
+
+                entity.Property(e => e.Gpu).HasColumnName("GPU");
 
                 entity.Property(e => e.ImageUrl).IsUnicode(false);
 
@@ -104,15 +117,6 @@ namespace WebAPI.Model
                     .IsUnicode(false)
                     .HasColumnName("RAM");
 
-                entity.Property(e => e.Cpu)
-                    .HasColumnName("CPU");
-
-                entity.Property(e => e.Gpu)
-                    .HasColumnType("GPU");
-
-                entity.Property(e => e.Gps)
-                    .HasColumnName("GPS");
-
                 entity.Property(e => e.Rom)
                     .IsUnicode(false)
                     .HasColumnName("ROM");
@@ -120,7 +124,7 @@ namespace WebAPI.Model
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.BrandId)
-                    .HasConstraintName("FK__Products__BrandI__36B12243");
+                    .HasConstraintName("FK__Products__BrandI__01142BA1");
             });
 
             modelBuilder.Entity<Review>(entity =>
@@ -130,12 +134,12 @@ namespace WebAPI.Model
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__Reviews__Product__38996AB5");
+                    .HasConstraintName("FK__Reviews__Product__656C112C");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Reviews__UserId__37A5467C");
+                    .HasConstraintName("FK__Reviews__UserId__70DDC3D8");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -159,7 +163,7 @@ namespace WebAPI.Model
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.StatusUpdateOrders)
                     .HasForeignKey(d => d.UpdatedBy)
-                    .HasConstraintName("FK__StatusUpd__Updat__3F466844");
+                    .HasConstraintName("FK__StatusUpd__Updat__74AE54BC");
             });
 
             modelBuilder.Entity<Subscriber>(entity =>
@@ -177,19 +181,16 @@ namespace WebAPI.Model
 
                 entity.Property(e => e.ImageUrl).IsUnicode(false);
 
-                entity.Property(e => e.Password)
-                    .IsUnicode(false);
+                entity.Property(e => e.Password).IsUnicode(false);
 
                 entity.Property(e => e.PhoneNumber).IsUnicode(false);
 
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .IsUnicode(false);
+                entity.Property(e => e.Username).IsUnicode(false);
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
-                    .HasConstraintName("FK__Users__RoleId__35BCFE0A");
+                    .HasConstraintName("FK__Users__RoleId__6FE99F9F");
             });
 
             OnModelCreatingPartial(modelBuilder);

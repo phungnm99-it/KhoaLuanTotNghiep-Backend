@@ -16,9 +16,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<IEnumerable<UserDTO>> GetAllUserAsync();
         Task<UserDTO> GetByIdAsync(int id);
         Task<UserDTO> AddAdminAccount(RegisterModel model);
-
-        Task ChangePasswordAsync(int userId, string newPassword);
-
-        
+        Task<bool> ChangePasswordAsync(int userId, string newPassword);
+        Task<bool> ResetNewPassword(ResetPasswordModel model);
     }
 }
