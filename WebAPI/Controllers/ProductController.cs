@@ -163,7 +163,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = product });
         }
 
-        [Route("saleproduct")]
+        [Route("sale")]
         [HttpGet]
         public async Task<IActionResult> GetAllSaleProduct()
         {

@@ -12,7 +12,8 @@ namespace WebAPI.AutoMapper
     {
         public FeedbackProfile()
         {
-            CreateMap<Feedback, FeedbackDTO>();
+            CreateMap<Feedback, FeedbackDTO>()
+                .ForMember(des => des.ReplierName, opt => opt.MapFrom(src => src.RepliedByNavigation.FullName));
         }
     }
 }

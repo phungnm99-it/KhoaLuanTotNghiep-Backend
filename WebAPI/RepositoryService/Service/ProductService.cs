@@ -86,7 +86,7 @@ namespace WebAPI.RepositoryService.Service
         {
             var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
             if (product == null || product.IsDeleted == true) return null;
-            return _mapper.Map<ProductDTO>(product);
+            return mapToProductDTO(product);
         }
 
         public async Task<ProductDTO> UpdateProductAsync(ProductUpdateModel productModel)
@@ -162,7 +162,7 @@ namespace WebAPI.RepositoryService.Service
             _unitOfWork.ProductRepository.UpdateProduct(product);
             await _unitOfWork.SaveAsync();
             product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productModel.Id);
-            return _mapper.Map<ProductDTO>(product);
+            return mapToProductDTO(product);
         }
 
         public async Task<bool> DeleteProductAsync(int productId)
@@ -318,6 +318,7 @@ namespace WebAPI.RepositoryService.Service
             var brand = await _unitOfWork.BrandRepository
                 .FindByCondition(brand => brand.Name.ToLower() == brandName.ToLower())
                 .FirstOrDefaultAsync();
+            if (brand == null) return null;
             var products = await _unitOfWork.ProductRepository
                 .FindByCondition(index => index.BrandId == brand.Id)
                 .Include(index => index.Brand)

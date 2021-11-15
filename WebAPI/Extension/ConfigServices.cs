@@ -34,12 +34,14 @@ namespace WebAPI.Extension
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<ISubscriberRepository, SubsriberRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<ISubscriberService, SubscriberService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
 
 
             services.AddScoped<IUploadImage, UploadImageWithCloudinary>();

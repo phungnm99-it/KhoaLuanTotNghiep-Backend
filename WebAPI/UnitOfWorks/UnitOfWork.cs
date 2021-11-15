@@ -14,18 +14,21 @@ namespace WebAPI.UnitOfWorks
         public IUserRepository UserRepository { get; set; }
         public IBrandRepository BrandRepository { get; set; }
         public ISubscriberRepository SubscriberRepository { get; set; }
+        public IFeedbackRepository FeedbackRepository { get; set; }
 
         public UnitOfWork(PTStoreContext context,
             IProductRepository productRepository,
             IUserRepository userRepository,
             IBrandRepository brandRepository,
-            ISubscriberRepository subscriberRepository)
+            ISubscriberRepository subscriberRepository,
+            IFeedbackRepository feedbackRepository)
         {
             RepositoryContext = context;
             ProductRepository = productRepository;
             UserRepository = userRepository;
             BrandRepository = brandRepository;
             SubscriberRepository = subscriberRepository;
+            FeedbackRepository = feedbackRepository;
         }
 
         public async Task SaveAsync()

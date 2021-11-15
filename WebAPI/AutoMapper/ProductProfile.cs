@@ -13,16 +13,16 @@ namespace WebAPI.AutoMapper
     {
         public ProductProfile()
         {
-            //CreateMap<Product, ProductDTO>()
-            //    .ForMember(destination => destination.BrandName,
-            //    options => options.MapFrom(source => source))
-            //    .ReverseMap();
+            CreateMap<Product, ProductDTO>()
+                .ForMember(destination => destination.BrandName,
+                options => options.MapFrom(source => source.Brand.Name))
+                .ReverseMap();
 
-            //CreateMap<ProductModel, Product>();
+            CreateMap<ProductModel, Product>();
 
-            //CreateMap<Product, ProductStockManager>();
+            CreateMap<Product, ProductStockManager>();
 
-            //CreateMap<Product, ProductPriceManager>();
+            CreateMap<Product, ProductPriceManager>();
         }
     }
 }
