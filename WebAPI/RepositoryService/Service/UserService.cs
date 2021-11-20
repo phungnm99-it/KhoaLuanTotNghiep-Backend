@@ -13,6 +13,7 @@ using WebAPI.RepositoryService.Interface;
 using WebAPI.UnitOfWorks;
 using WebAPI.UploadImageUtils;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
+using Microsoft.AspNetCore.Http;
 
 namespace WebAPI.RepositoryService.Service
 {
@@ -33,20 +34,22 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> AddAdminAccount(RegisterModel model)
         {
-            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email)
+            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
                 .FirstOrDefaultAsync();
             if (checkEmailExist != null)
                 return null;
             User user = new User();
             user.Username = model.Username;
+            user.Email = model.Email;
+            user.Gender = model.Gender;
             user.Password = _hashPassword.GetHashPassword(model.Password);
+            user.FullName = model.FullName;
+            user.Birthday = model.Birthday;
+            user.Address = model.Address;
+            user.PhoneNumber = model.PhoneNumber;
+            user.ImageUrl = "";
             user.IsEmailConfirmed = false;
-            if (model.Image != null && model.Image.Length != 0)
-            {
-                string folder = "user/";
-                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email, folder) as ImageUploadResult;
-                user.ImageUrl = result.Url.ToString();
-            }
+            
             user.RoleId = Helper.Role.AdminRoleId;
             user.CreatedDate = DateTime.Now;
             user.IsDeleted = false;
@@ -139,20 +142,21 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> RegisterAsync(RegisterModel model)
         {
-            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email)
+            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
                 .FirstOrDefaultAsync();
             if (checkEmailExist != null)
                 return null;
             User user = new User();
             user.Username = model.Username;
+            user.Gender = model.Gender;
             user.Password = _hashPassword.GetHashPassword(model.Password);
+            user.FullName = model.FullName;
+            user.Email = model.Email;
+            user.Birthday = model.Birthday;
+            user.Address = model.Address;
+            user.PhoneNumber = model.PhoneNumber;
+            user.ImageUrl = "";
             user.IsEmailConfirmed = false;
-            if (model.Image != null && model.Image.Length != 0)
-            {
-                string folder = "user/";
-                ImageUploadResult result = await _uploadImage.UploadImage(model.Image, model.Email, folder) as ImageUploadResult;
-                user.ImageUrl = result.Url.ToString();
-            }
             user.RoleId = Helper.Role.UserRoleId;
             user.CreatedDate = DateTime.Now;
             user.IsGoogleLogin = false;
@@ -183,6 +187,26 @@ namespace WebAPI.RepositoryService.Service
                 }
             }
             return flag;
+        }
+
+        public async Task<bool> UploadImage(IFormFile image, int userId)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.FindByCondition(user => user.Id == userId).FirstOrDefaultAsync();
+                if (image != null && image.Length != 0)
+                {
+                    string folder = "user/";
+                    ImageUploadResult result = await _uploadImage.UploadImage(image, user.Email, folder) as ImageUploadResult;
+                    user.ImageUrl = result.Url.ToString();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            
         }
     }
 }

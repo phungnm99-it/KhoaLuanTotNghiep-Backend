@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace WebAPI.Controllers
         {
             var user = await _userService.RegisterAsync(model);
             if (user == null)
-                return new ObjectResult(new { code = "401", message = "Email exist" });
+                return new ObjectResult(new { code = "401", message = "Email or username exist" });
 
             return new ObjectResult(new { code = "200", user = user });
         }
@@ -93,9 +94,9 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = Role.SuperAdmin)]
-        [Route("addAdminAccount")]
+        [Route("createAdminAccount")]
         [HttpPost]
-        public async Task<IActionResult> AddAdminAccount([FromForm] RegisterModel model)
+        public async Task<IActionResult> CreateAdminAccount([FromForm] RegisterModel model)
         {
             var user = await _userService.AddAdminAccount(model);
             if (user == null)
@@ -120,6 +121,18 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordModel model)
         {
             var result = await _userService.ResetNewPassword(model);
+            if (!result)
+                return new ObjectResult(new { code = "401", message = "Error" });
+
+            return new ObjectResult(new { code = "200", message = "Success" });
+        }
+
+        [Route("uploadImage")]
+        [HttpPost]
+        public async Task<IActionResult> UploadImage([FromForm]IFormFile image)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _userService.UploadImage(image, user.Id);
             if (!result)
                 return new ObjectResult(new { code = "401", message = "Error" });
 

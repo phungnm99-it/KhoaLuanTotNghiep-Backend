@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,5 +19,6 @@ namespace WebAPI.RepositoryService.Interface
         Task<UserDTO> AddAdminAccount(RegisterModel model);
         Task<bool> ChangePasswordAsync(int userId, string newPassword);
         Task<bool> ResetNewPassword(ResetPasswordModel model);
+        public Task<bool> UploadImage(IFormFile image, int userId);
     }
 }
