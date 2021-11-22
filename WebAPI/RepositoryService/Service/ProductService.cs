@@ -363,6 +363,7 @@ namespace WebAPI.RepositoryService.Service
         {
             Id = product.Id,
             Name = product.Name,
+            CurrentPrice = product.CurrentPrice,
             ImageUrl = product.ImageUrl,
             Status = product.Status,
             Price = product.Price,
