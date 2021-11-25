@@ -7,6 +7,6 @@ namespace WebAPI.RepositoryService.Interface
 {
     public interface IOrderService
     {
-
+        
     }
 }

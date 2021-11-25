@@ -98,7 +98,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAdminAccount([FromForm] RegisterModel model)
         {
-            var user = await _userService.AddAdminAccount(model);
+            var user = await _userService.AddAdminAccountAsync(model);
             if (user == null)
             {
                 return new ObjectResult(new { code = 401, message = "Email exists" });
@@ -120,7 +120,19 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordModel model)
         {
-            var result = await _userService.ResetNewPassword(model);
+            var result = await _userService.ResetNewPasswordAsync(model);
+            if (!result)
+                return new ObjectResult(new { code = "401", message = "Error" });
+
+            return new ObjectResult(new { code = "200", message = "Success" });
+        }
+
+        [AllowAnonymous]
+        [Route("forgetPassword")]
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword([FromForm] string email)
+        {
+            var result = await _userService.ForgetPasswordAsync(email);
             if (!result)
                 return new ObjectResult(new { code = "401", message = "Error" });
 
@@ -132,7 +144,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> UploadImage([FromForm]IFormFile image)
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            var result = await _userService.UploadImage(image, user.Id);
+            var result = await _userService.UploadImageAsync(image, user.Id);
             if (!result)
                 return new ObjectResult(new { code = "401", message = "Error" });
 

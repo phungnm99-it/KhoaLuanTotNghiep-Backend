@@ -16,9 +16,10 @@ namespace WebAPI.RepositoryService.Interface
         Task<UserDTO> RegisterAsync(RegisterModel model);
         Task<IEnumerable<UserDTO>> GetAllUserAsync();
         Task<UserDTO> GetByIdAsync(int id);
-        Task<UserDTO> AddAdminAccount(RegisterModel model);
+        Task<UserDTO> AddAdminAccountAsync(RegisterModel model);
         Task<bool> ChangePasswordAsync(int userId, string newPassword);
-        Task<bool> ResetNewPassword(ResetPasswordModel model);
-        public Task<bool> UploadImage(IFormFile image, int userId);
+        Task<bool> ResetNewPasswordAsync(ResetPasswordModel model);
+        Task<bool> ForgetPasswordAsync(string email);
+        public Task<bool> UploadImageAsync(IFormFile image, int userId);
     }
 }

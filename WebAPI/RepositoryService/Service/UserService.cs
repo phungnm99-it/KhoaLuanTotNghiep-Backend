@@ -14,6 +14,7 @@ using WebAPI.UnitOfWorks;
 using WebAPI.UploadImageUtils;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 using Microsoft.AspNetCore.Http;
+using WebAPI.MailKit;
 
 namespace WebAPI.RepositoryService.Service
 {
@@ -22,17 +23,19 @@ namespace WebAPI.RepositoryService.Service
         private IUnitOfWork _unitOfWork;
         private IUploadImage _uploadImage;
         private IMapper _mapper;
-        private ICustomHash _hashPassword;
+        private ICustomHash _hash;
+        private IMailService _mailService;
         public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUploadImage uploadImageUtils,
-            ICustomHash hashPassword)
+            ICustomHash hashPassword, IMailService mailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _uploadImage = uploadImageUtils;
-            _hashPassword = hashPassword;
+            _hash = hashPassword;
+            _mailService = mailService;
         }
 
-        public async Task<UserDTO> AddAdminAccount(RegisterModel model)
+        public async Task<UserDTO> AddAdminAccountAsync(RegisterModel model)
         {
             var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
                 .FirstOrDefaultAsync();
@@ -42,7 +45,7 @@ namespace WebAPI.RepositoryService.Service
             user.Username = model.Username;
             user.Email = model.Email;
             user.Gender = model.Gender;
-            user.Password = _hashPassword.GetHashPassword(model.Password);
+            user.Password = _hash.GetHashPassword(model.Password);
             user.FullName = model.FullName;
             user.Birthday = model.Birthday;
             user.Address = model.Address;
@@ -75,7 +78,7 @@ namespace WebAPI.RepositoryService.Service
             if (user == null)
                 return null;
 
-            if (user.Password != _hashPassword.GetHashPassword(password))
+            if (user.Password != _hash.GetHashPassword(password))
                 return null;
 
             user = await _unitOfWork.UserRepository.GetUserByIdAsync(user.Id);
@@ -118,8 +121,25 @@ namespace WebAPI.RepositoryService.Service
             var user = await _unitOfWork.UserRepository.FindByCondition(
                 user => user.Id == userId).FirstAsync();
             if (user == null) return false;
-            user.Password = _hashPassword.GetHashPassword(newPassword);
+            user.Password = _hash.GetHashPassword(newPassword);
             await _unitOfWork.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> ForgetPasswordAsync(string email)
+        {
+            var user = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == email).FirstOrDefaultAsync();
+            if (user == null || user.IsDeleted == true || user.IsDisable == null)
+                return false;
+
+            string hashId = _hash.GetHashResetPassword(user.Id);
+            MailRequest request = new MailRequest();
+            request.ToEmail = email;
+            request.Subject = "[PT Store] Reset mật khẩu";
+            request.Body = "Truy cập đường link bên dưới để reset mật khẩu <br/>";
+            request.Body += "https://localhost/resetPassword/" + hashId;
+            await _mailService.SendEmailAsync(request);
+
             return true;
         }
 
@@ -149,7 +169,7 @@ namespace WebAPI.RepositoryService.Service
             User user = new User();
             user.Username = model.Username;
             user.Gender = model.Gender;
-            user.Password = _hashPassword.GetHashPassword(model.Password);
+            user.Password = _hash.GetHashPassword(model.Password);
             user.FullName = model.FullName;
             user.Email = model.Email;
             user.Birthday = model.Birthday;
@@ -171,16 +191,16 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<UserDTO>(createdUser);
         }
 
-        public async Task<bool> ResetNewPassword(ResetPasswordModel model)
+        public async Task<bool> ResetNewPasswordAsync(ResetPasswordModel model)
         {
             var users = await _unitOfWork.UserRepository.GetAllUsersAsync();
             bool flag = false;
             foreach (var user in users)
             {
-                if(_hashPassword.GetHashResetPassword(user.Id) == model.HashId)
+                if(_hash.GetHashResetPassword(user.Id) == model.HashId)
                 {
                     flag = true;
-                    user.Password = _hashPassword.GetHashPassword(model.NewPassword);
+                    user.Password = _hash.GetHashPassword(model.NewPassword);
                     _unitOfWork.UserRepository.UpdateUser(user);
                     await _unitOfWork.SaveAsync();
                     break;
@@ -189,7 +209,7 @@ namespace WebAPI.RepositoryService.Service
             return flag;
         }
 
-        public async Task<bool> UploadImage(IFormFile image, int userId)
+        public async Task<bool> UploadImageAsync(IFormFile image, int userId)
         {
             try
             {
