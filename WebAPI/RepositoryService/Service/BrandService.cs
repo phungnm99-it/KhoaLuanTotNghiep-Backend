@@ -111,5 +111,17 @@ namespace WebAPI.RepositoryService.Service
             await _unitOfWork.SaveAsync();
             return true;
         }
+
+        public async Task<IEnumerable<BrandDTO>> GetActiveBrandAsync()
+        {
+            var brands = await _unitOfWork.BrandRepository.FindByCondition(brand => brand.Products.Count > 0).ToListAsync();
+            List<BrandDTO> list = new List<BrandDTO>();
+            foreach (var brand in brands)
+            {
+                list.Add(_mapper.Map<BrandDTO>(brand));
+            }
+
+            return list;
+        }
     }
 }

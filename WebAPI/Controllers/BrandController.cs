@@ -26,6 +26,14 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = list });
         }
 
+        [Route("active")]
+        [HttpGet]
+        public async Task<IActionResult> GetActiveBrands()
+        {
+            var list = await _brandService.GetActiveBrandAsync();
+            return new OkObjectResult(new { code = "200", data = list });
+        }
+
         [Route("create")]
         [HttpPost]
         public async Task<IActionResult> CreateBrand([FromForm] BrandModel brandModel)
