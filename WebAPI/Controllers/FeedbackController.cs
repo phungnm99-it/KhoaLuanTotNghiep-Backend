@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
             _feedbackService = service;
         }
 
-        [Authorize(Roles = Role.Admins)]
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = list });
         }
 
-        [Authorize(Roles = Role.Admins)]
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetById(int id)
@@ -53,7 +53,7 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = feedback });
         }
 
-        [Authorize(Roles = Role.Admins)]
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("reply")]
         [HttpPost]
         public async Task<IActionResult> Reply([FromForm] ReplyFeedbackModel model)

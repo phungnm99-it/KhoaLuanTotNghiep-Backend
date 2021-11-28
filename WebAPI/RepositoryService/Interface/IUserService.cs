@@ -21,5 +21,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<bool> ResetNewPasswordAsync(ResetPasswordModel model);
         Task<bool> ForgetPasswordAsync(string email);
         public Task<bool> UploadImageAsync(IFormFile image, int userId);
+
+        Task<UserDTO> AuthenticateAdminAsync(string username, string password);
     }
 }

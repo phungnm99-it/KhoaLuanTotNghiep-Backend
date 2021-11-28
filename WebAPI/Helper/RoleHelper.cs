@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Helper
 {
-    public static class Role
+    public static class RoleHelper
     {
         public const string SuperAdmin = "SuperAdmin";
         public const string Shipper = "Shipper";

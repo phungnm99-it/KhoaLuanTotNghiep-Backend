@@ -40,6 +40,21 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
+        [Route("loginAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> LoginAdmin([FromForm] LoginModel model)
+        {
+            var user = await _userService.AuthenticateAdminAsync(model.Username, model.Password);
+            if (user == null)
+            {
+                return new ObjectResult(new { code = "401", message = "Username or password is wrong!" });
+            }
+            var token = _jwtUtils.GenerateToken(user);
+
+            return new ObjectResult(new { code = "200", token = token });
+        }
+
+        [AllowAnonymous]
         [Route("register")]
         [HttpPost]
         public async Task<IActionResult> Register([FromForm] RegisterModel model)
@@ -68,7 +83,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = Role.Admins)]
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("getAll")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -77,7 +92,7 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = list });
         }
 
-        [Authorize(Roles = Role.Admins)]
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetById(int id)
@@ -93,7 +108,7 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = HttpContext.Items["User"] });
         }
 
-        [Authorize(Roles = Role.SuperAdmin)]
+        [Authorize(Roles = RoleHelper.SuperAdmin)]
         [Route("createAdminAccount")]
         [HttpPost]
         public async Task<IActionResult> CreateAdminAccount([FromForm] RegisterModel model)

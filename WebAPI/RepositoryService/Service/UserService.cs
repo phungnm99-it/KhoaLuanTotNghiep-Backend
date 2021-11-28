@@ -53,7 +53,7 @@ namespace WebAPI.RepositoryService.Service
             user.ImageUrl = "";
             user.IsEmailConfirmed = false;
             
-            user.RoleId = Helper.Role.AdminRoleId;
+            user.RoleId = Helper.RoleHelper.AdminRoleId;
             user.CreatedDate = DateTime.Now;
             user.IsDeleted = false;
             user.IsDisable = false;
@@ -64,6 +64,26 @@ namespace WebAPI.RepositoryService.Service
                 user => user.Email == model.Email).FirstOrDefaultAsync();
             createdUser = await _unitOfWork.Users.GetUserByIdAsync(createdUser.Id);
             return _mapper.Map<UserDTO>(createdUser);
+        }
+
+        public async Task<UserDTO> AuthenticateAdminAsync(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return null;
+            var user = await _unitOfWork.Users
+                .FindByCondition(user => user.Username == username)
+                .FirstOrDefaultAsync();
+
+            // return null if user not found
+            if (user == null)
+                return null;
+
+            if (user.Password != _hash.GetHashPassword(password))
+                return null;
+            if (user.RoleId != RoleHelper.AdminRoleId && user.RoleId != RoleHelper.SuperAdminRoleId)
+                return null;
+            user = await _unitOfWork.Users.GetUserByIdAsync(user.Id);
+            return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> AuthenticateAsync(string username, string password)
@@ -101,7 +121,7 @@ namespace WebAPI.RepositoryService.Service
                 userGoogle.ImageUrl = payload.Picture;
                 userGoogle.IsGoogleLogin = true;
                 userGoogle.CreatedDate = DateTime.Now;
-                userGoogle.RoleId = Helper.Role.UserRoleId;
+                userGoogle.RoleId = Helper.RoleHelper.UserRoleId;
                 userGoogle.IsDeleted = false;
                 userGoogle.IsDisable = false;
 
@@ -177,7 +197,7 @@ namespace WebAPI.RepositoryService.Service
             user.PhoneNumber = model.PhoneNumber;
             user.ImageUrl = "";
             user.IsEmailConfirmed = false;
-            user.RoleId = Helper.Role.UserRoleId;
+            user.RoleId = Helper.RoleHelper.UserRoleId;
             user.CreatedDate = DateTime.Now;
             user.IsGoogleLogin = false;
             user.IsDeleted = false;
