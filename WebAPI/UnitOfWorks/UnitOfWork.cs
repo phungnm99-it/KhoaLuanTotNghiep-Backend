@@ -10,25 +10,32 @@ namespace WebAPI.UnitOfWorks
     public class UnitOfWork : IUnitOfWork
     {
         private PTStoreContext RepositoryContext { get; set; }
-        public IProductRepository ProductRepository { get; set; }
-        public IUserRepository UserRepository { get; set; }
-        public IBrandRepository BrandRepository { get; set; }
-        public ISubscriberRepository SubscriberRepository { get; set; }
-        public IFeedbackRepository FeedbackRepository { get; set; }
+        public IProductRepository Products { get; set; }
+        public IUserRepository Users { get; set; }
+        public IBrandRepository Brands { get; set; }
+        public ISubscriberRepository Subscribers { get; set; }
+        public IFeedbackRepository Feedbacks { get; set; }
+
+        public IOrderRepository Orders { get; set; }
+        public IOrderDetailRepository OrderDetails { get; set; }
 
         public UnitOfWork(PTStoreContext context,
             IProductRepository productRepository,
             IUserRepository userRepository,
             IBrandRepository brandRepository,
             ISubscriberRepository subscriberRepository,
-            IFeedbackRepository feedbackRepository)
+            IFeedbackRepository feedbackRepository,
+            IOrderRepository orderRepository,
+            IOrderDetailRepository orderDetailRepository)
         {
             RepositoryContext = context;
-            ProductRepository = productRepository;
-            UserRepository = userRepository;
-            BrandRepository = brandRepository;
-            SubscriberRepository = subscriberRepository;
-            FeedbackRepository = feedbackRepository;
+            Products = productRepository;
+            Users = userRepository;
+            Brands = brandRepository;
+            Subscribers = subscriberRepository;
+            Feedbacks = feedbackRepository;
+            Orders = orderRepository;
+            OrderDetails = orderDetailRepository;
         }
 
         public async Task SaveAsync()

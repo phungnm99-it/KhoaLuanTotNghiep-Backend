@@ -8,14 +8,17 @@ namespace WebAPI.UnitOfWorks
 {
     public interface IUnitOfWork
     {
-        IProductRepository ProductRepository { get; set; }
-        IUserRepository UserRepository { get; set; }
+        IProductRepository Products { get; set; }
+        IUserRepository Users { get; set; }
 
-        IBrandRepository BrandRepository { get; set; }
+        IBrandRepository Brands { get; set; }
 
-        ISubscriberRepository SubscriberRepository { get; set; }
+        ISubscriberRepository Subscribers { get; set; }
 
-        IFeedbackRepository FeedbackRepository { get; set; }
+        IFeedbackRepository Feedbacks { get; set; }
+
+        IOrderRepository Orders { get; set; }
+        IOrderDetailRepository OrderDetails { get; set; }
         Task SaveAsync();
     }
 }

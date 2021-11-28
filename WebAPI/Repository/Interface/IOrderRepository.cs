@@ -10,6 +10,7 @@ namespace WebAPI.Repository.Interface
     {
         Task<Order> GetOrderByIdAsync(int orderId);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<Order> GetOrderByOrderCodeAsync(string orderCode);
         void CreateOrder(Order order);
         void UpdateOrder(Order order);
     }

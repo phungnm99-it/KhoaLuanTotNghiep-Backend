@@ -198,6 +198,21 @@ namespace WebAPI.Controllers
         //    return new ObjectResult(new { code = 200, data = product });
         //}
 
+        [Route("similar/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> GetSimilarProducts(int id)
+        {
+            var products = await _service.GetSimilarProducts(id);
+            return new ObjectResult(new { code = 200, data = products });
+        }
+
+        [Route("")]
+        [HttpPost]
+        public async Task<IActionResult> GetActiveProducts([FromBody] SortModel model)
+        {
+            var products = await _service.GetActiveProducts(model);
+            return new ObjectResult(new { code = 200, data = products });
+        }
 
     }
 }

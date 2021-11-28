@@ -11,6 +11,7 @@ namespace WebAPI.RepositoryService.Interface
 {
     public interface IProductService
     {
+        public Task<IEnumerable<ProductDTO>> GetActiveProducts(SortModel sortModel);
         public Task<ProductDTO> GetProductByIdAsync(int productId);
 
         public Task<IEnumerable<ProductDTO>> GetAllSellingProductsAsync();
@@ -48,5 +49,7 @@ namespace WebAPI.RepositoryService.Interface
         public Task<IEnumerable<ProductDTO>> FindProductsByBrandName(string brandName);
 
         public Task<IEnumerable<ProductDTO>> FindProductsByProductName(string productName);
+
+        public Task<IEnumerable<ProductDTO>> GetSimilarProducts(int id);
     }
 }

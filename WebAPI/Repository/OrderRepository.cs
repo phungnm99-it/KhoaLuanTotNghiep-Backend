@@ -27,6 +27,11 @@ namespace WebAPI.Repository
             return await FindByCondition(order => order.Id == orderId).FirstOrDefaultAsync();
         }
 
+        public async Task<Order> GetOrderByOrderCodeAsync(string orderCode)
+        {
+            return await FindByCondition(order => order.OrderCode == orderCode).FirstOrDefaultAsync();
+        }
+
         public void UpdateOrder(Order order)
         {
             Update(order);

@@ -29,6 +29,7 @@ namespace WebAPI.ModelDTO
         public string Wifi { get; set; }
         public string Gps { get; set; }
         public decimal CurrentPrice { get; set; }
+        public int Stock { get; set; }
         public bool IsSale { get; set; }
         public bool IsFeatured { get; set; }
     }

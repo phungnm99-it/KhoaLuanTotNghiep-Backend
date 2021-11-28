@@ -32,7 +32,7 @@ namespace WebAPI.RepositoryService.Service
         {
             if (await IsProductNameExist(productModel.Name))
                 return null;
-            var brand = await _unitOfWork.BrandRepository.FindByCondition(brand => brand.Name.ToLower() == productModel.BrandName.ToLower()).FirstOrDefaultAsync();
+            var brand = await _unitOfWork.Brands.FindByCondition(brand => brand.Name.ToLower() == productModel.BrandName.ToLower()).FirstOrDefaultAsync();
             Product product = new Product();
             product = _mapper.Map<Product>(productModel);
             product.BrandId = brand.Id;
@@ -51,16 +51,16 @@ namespace WebAPI.RepositoryService.Service
                 product.ImageUrl = result.Url.ToString();
             }
 
-            _unitOfWork.ProductRepository.CreateProduct(product);
+            _unitOfWork.Products.CreateProduct(product);
             await _unitOfWork.SaveAsync();
 
-            var prod = await _unitOfWork.ProductRepository.FindByCondition(index => index.Name == productModel.Name).FirstOrDefaultAsync();
+            var prod = await _unitOfWork.Products.FindByCondition(index => index.Name == productModel.Name).FirstOrDefaultAsync();
             return _mapper.Map<ProductDTO>(prod);
         }
 
         private async Task<bool> IsProductNameExist(string name)
         {
-            var checkProductNameExist = await _unitOfWork.ProductRepository.FindByCondition(product => product.Name == name)
+            var checkProductNameExist = await _unitOfWork.Products.FindByCondition(product => product.Name == name)
                 .FirstOrDefaultAsync();
             if (checkProductNameExist == null || checkProductNameExist.IsDeleted == true)
                 return false;
@@ -69,7 +69,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<IEnumerable<ProductDTO>> GetAllSellingProductsAsync()
         {
-            var products = await _unitOfWork.ProductRepository
+            var products = await _unitOfWork.Products
                 .FindByCondition(index => index.IsDeleted == false
                 && (!index.Status.Equals("Ngừng kinh doanh")))
                 .Include(index=>index.Brand)
@@ -84,7 +84,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<ProductDTO> GetProductByIdAsync(int productId)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(productId);
             if (product == null || product.IsDeleted == true) return null;
             return mapToProductDTO(product);
         }
@@ -92,7 +92,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<ProductDTO> UpdateProductAsync(ProductUpdateModel productModel)
         {
             if (await IsProductNameExist(productModel.Name)) return null;
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productModel.Id);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(productModel.Id);
             if (product == null || product.IsDeleted == true) return null;
 
             if (!string.IsNullOrEmpty(productModel.Battery))
@@ -100,7 +100,7 @@ namespace WebAPI.RepositoryService.Service
 
             if (!string.IsNullOrEmpty(productModel.BrandName))
             {
-                var brand = await _unitOfWork.BrandRepository
+                var brand = await _unitOfWork.Brands
                     .FindByCondition(brand => brand.Name.ToLower() == productModel.BrandName.ToLower())
                     .FirstOrDefaultAsync();
                 product.BrandId = brand.Id;
@@ -159,19 +159,19 @@ namespace WebAPI.RepositoryService.Service
                 ImageUploadResult result = await _uploadImage.UploadImage(productModel.Image, name, folder) as ImageUploadResult;
                 product.ImageUrl = result.Url.ToString();
             }
-            _unitOfWork.ProductRepository.UpdateProduct(product);
+            _unitOfWork.Products.UpdateProduct(product);
             await _unitOfWork.SaveAsync();
-            product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productModel.Id);
+            product = await _unitOfWork.Products.GetProductByIdAsync(productModel.Id);
             return mapToProductDTO(product);
         }
 
         public async Task<bool> DeleteProductAsync(int productId)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(productId);
             if (product == null || product.IsDeleted == true) return false;
             product.IsFeatured = false;
             product.IsDeleted = true;
-            _unitOfWork.ProductRepository.DeleteProduct(product);
+            _unitOfWork.Products.DeleteProduct(product);
             await _unitOfWork.SaveAsync();
             return true;
         }
@@ -179,7 +179,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<IEnumerable<ProductStockManager>> GetAllProductsWithStockAsync()
         {
             List<ProductStockManager> list = new List<ProductStockManager>();
-            var products = await _unitOfWork.ProductRepository.FindByCondition(index => index.IsDeleted == false).ToListAsync();
+            var products = await _unitOfWork.Products.FindByCondition(index => index.IsDeleted == false).ToListAsync();
             foreach(var product in products)
             {
                 ProductStockManager pr = new ProductStockManager();
@@ -191,7 +191,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<ProductStockManager> GetProductWithStockByIdAsync(int productId)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(productId);
             if (product == null || product.IsDeleted == true)
                 return null;
             return _mapper.Map<ProductStockManager>(product);
@@ -199,7 +199,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<ProductStockManager> UpdateProductWithStockAsync(ProductStockManager productStock)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productStock.Id);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(productStock.Id);
             if (product == null || product.IsDeleted == true)
                 return null;
 
@@ -209,16 +209,16 @@ namespace WebAPI.RepositoryService.Service
             if (productStock.Stock >= 0)
                 product.Stock = productStock.Stock;
 
-            _unitOfWork.ProductRepository.UpdateProduct(product);
+            _unitOfWork.Products.UpdateProduct(product);
             await _unitOfWork.SaveAsync();
-            product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productStock.Id);
+            product = await _unitOfWork.Products.GetProductByIdAsync(productStock.Id);
             return _mapper.Map<ProductStockManager>(product);
         }
 
         public async Task<IEnumerable<ProductDTO>> GetAllFeatureProductsAsync()
         {
-            var products = await _unitOfWork.ProductRepository
-                .FindByCondition(index => index.IsDeleted == false && index.IsFeatured == true)
+            var products = await _unitOfWork.Products
+                .FindByCondition(index => index.IsDeleted == false && index.IsFeatured == true).Take(8)
                 .ToListAsync();
             List<ProductDTO> list = new List<ProductDTO>();
             foreach (var product in products)
@@ -230,31 +230,31 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<bool> AddFeatureProductByIdAsync(int id)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(id);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(id);
             if (product == null || product.IsDeleted == true)
                 return false;
 
             product.IsFeatured = true;
-            _unitOfWork.ProductRepository.DeleteProduct(product);
+            _unitOfWork.Products.DeleteProduct(product);
             await _unitOfWork.SaveAsync();
             return true;
         }
         
         public async Task<bool> RemoveFeatureProductByIdAsync(int id)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(id);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(id);
             if (product == null || product.IsDeleted == true)
                 return false;
 
             product.IsFeatured = false;
-            _unitOfWork.ProductRepository.DeleteProduct(product);
+            _unitOfWork.Products.DeleteProduct(product);
             await _unitOfWork.SaveAsync();
             return true;
         }
 
         public async Task<IEnumerable<ProductPriceManager>> GetAllProductsWithPriceAsync()
         {
-            var products = await _unitOfWork.ProductRepository
+            var products = await _unitOfWork.Products
                 .FindByCondition(index => index.IsDeleted == false)
                 .ToListAsync();
             List<ProductPriceManager> list = new List<ProductPriceManager>();
@@ -267,7 +267,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<ProductPriceManager> GetProductWithPriceByIdAsync(int productId)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(productId);
             if (product == null || product.IsDeleted == true)
                 return null;
             return _mapper.Map<ProductPriceManager>(product);
@@ -275,7 +275,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<ProductPriceManager> UpdateProductWithPriceAsync(ProductPriceManager productPrice)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productPrice.Id);
+            var product = await _unitOfWork.Products.GetProductByIdAsync(productPrice.Id);
             if (product == null || product.IsDeleted == true)
                 return null;
 
@@ -293,15 +293,15 @@ namespace WebAPI.RepositoryService.Service
                 product.IsSale = false;
             }
 
-            _unitOfWork.ProductRepository.UpdateProduct(product);
+            _unitOfWork.Products.UpdateProduct(product);
             await _unitOfWork.SaveAsync();
-            product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productPrice.Id);
+            product = await _unitOfWork.Products.GetProductByIdAsync(productPrice.Id);
             return _mapper.Map<ProductPriceManager>(product);
         }
 
         public async Task<IEnumerable<ProductDTO>> GetAllSaleProductsAsync()
         {
-            var products = await _unitOfWork.ProductRepository
+            var products = await _unitOfWork.Products
                 .FindByCondition(index => index.IsDeleted == false && index.IsSale == true)
                 .Include(index => index.Brand)
                 .ToListAsync();
@@ -315,11 +315,11 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<IEnumerable<ProductDTO>> FindProductsByBrandName(string brandName)
         {
-            var brand = await _unitOfWork.BrandRepository
+            var brand = await _unitOfWork.Brands
                 .FindByCondition(brand => brand.Name.ToLower() == brandName.ToLower())
                 .FirstOrDefaultAsync();
             if (brand == null) return null;
-            var products = await _unitOfWork.ProductRepository
+            var products = await _unitOfWork.Products
                 .FindByCondition(index => index.BrandId == brand.Id)
                 .Include(index => index.Brand)
                 .ToListAsync();
@@ -333,7 +333,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<IEnumerable<ProductDTO>> FindProductsByProductName(string productName)
         {
-            var products = await _unitOfWork.ProductRepository
+            var products = await _unitOfWork.Products
                 .FindByCondition(index => index.Name.ToLower().Contains(productName.ToLower()))
                 .Include(index => index.Brand)
                 .ToListAsync();
@@ -347,7 +347,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
         {
-            var products = await _unitOfWork.ProductRepository
+            var products = await _unitOfWork.Products
                 .FindByCondition(index => index.IsDeleted == false)
                 .Include(index => index.Brand)
                 .ToListAsync();
@@ -384,8 +384,77 @@ namespace WebAPI.RepositoryService.Service
             Wifi = product.Wifi,
             Gps = product.Gps,
             IsFeatured = product.IsFeatured.Value,
-            IsSale = product.IsSale.Value
+            IsSale = product.IsSale.Value,
+            Stock = product.Stock.GetValueOrDefault()
+            
         };
+
+        public async Task<IEnumerable<ProductDTO>> GetSimilarProducts(int id)
+        {
+            var products = await _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
+            && product.Stock > 0).Include(index => index.Brand).OrderBy(product => product.Price).ToListAsync();
+            int index = products.FindIndex(product => product.Id == id);
+            List<ProductDTO> list = new List<ProductDTO>();
+            if(index == 0)
+            {
+                for(int i = 1; i<5; i++)
+                {
+                    list.Add(_mapper.Map<ProductDTO>(products[i]));
+                }
+            }
+            else
+            if(index == products.Count - 1)
+            {
+                for (int i = index - 1; i > index - 5; i--)
+                {
+                    list.Add(_mapper.Map<ProductDTO>(products[i]));
+                }
+            }
+            else
+            {
+                list.Add(_mapper.Map<ProductDTO>(products[index - 2]));
+                list.Add(_mapper.Map<ProductDTO>(products[index - 1]));
+                list.Add(_mapper.Map<ProductDTO>(products[index + 1]));
+                list.Add(_mapper.Map<ProductDTO>(products[index + 2]));
+            }
+
+            return list;
+            
+        }
+
+        public async Task<IEnumerable<ProductDTO>> GetActiveProducts(SortModel sortModel)
+        {
+            var products = _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
+            && product.Stock > 0);
+            List<ProductDTO> list = new List<ProductDTO>();
+            if(!string.IsNullOrEmpty(sortModel.BrandName))
+            {
+                var brand = await _unitOfWork.Brands.FindByCondition(brand => brand.Name.ToLower().Contains(sortModel.BrandName.ToLower())).FirstOrDefaultAsync();
+                products = products.Where(product => product.BrandId == brand.Id);
+            }
+            if(!string.IsNullOrEmpty(sortModel.OrderType))
+            {
+                if (sortModel.OrderType == "a")
+                    products = products.OrderBy(product => product.Price);
+                else
+                    products = products.OrderByDescending(product => product.Price);
+            }
+            List<Product> productList = await products.Include(product => product.Brand).ToListAsync();
+            if(productList.Count < 12)
+            {
+                foreach(var item in productList)
+                {
+                    list.Add(_mapper.Map<ProductDTO>(item));
+                }
+                return list;
+            }
+            if (sortModel.Page != 0)
+            {
+                for (int i = (sortModel.Page - 1) * 12; i < sortModel.Page * 12 || i > products.Count(); i++)
+                    list.Add(_mapper.Map<ProductDTO>(productList[i]));
+            }
+            return list;
+        }
 
         //public async Task<string> Modify(IFormFile file)
         //{

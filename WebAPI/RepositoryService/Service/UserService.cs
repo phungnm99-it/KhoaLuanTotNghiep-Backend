@@ -37,7 +37,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> AddAdminAccountAsync(RegisterModel model)
         {
-            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
+            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
                 .FirstOrDefaultAsync();
             if (checkEmailExist != null)
                 return null;
@@ -58,11 +58,11 @@ namespace WebAPI.RepositoryService.Service
             user.IsDeleted = false;
             user.IsDisable = false;
 
-            _unitOfWork.UserRepository.CreateUser(user);
+            _unitOfWork.Users.CreateUser(user);
             await _unitOfWork.SaveAsync();
-            var createdUser = await _unitOfWork.UserRepository.FindByCondition(
+            var createdUser = await _unitOfWork.Users.FindByCondition(
                 user => user.Email == model.Email).FirstOrDefaultAsync();
-            createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
+            createdUser = await _unitOfWork.Users.GetUserByIdAsync(createdUser.Id);
             return _mapper.Map<UserDTO>(createdUser);
         }
 
@@ -70,7 +70,7 @@ namespace WebAPI.RepositoryService.Service
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
-            var user = await _unitOfWork.UserRepository
+            var user = await _unitOfWork.Users
                 .FindByCondition(user => user.Username == username)
                 .FirstOrDefaultAsync();
 
@@ -81,13 +81,13 @@ namespace WebAPI.RepositoryService.Service
             if (user.Password != _hash.GetHashPassword(password))
                 return null;
 
-            user = await _unitOfWork.UserRepository.GetUserByIdAsync(user.Id);
+            user = await _unitOfWork.Users.GetUserByIdAsync(user.Id);
             return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> AuthenticateGoogleAsync(Payload payload)
         {
-            var user = await _unitOfWork.UserRepository.FindByCondition(
+            var user = await _unitOfWork.Users.FindByCondition(
                 user => user.Email == payload.Email).FirstOrDefaultAsync();
 
             if(user == null)
@@ -105,20 +105,20 @@ namespace WebAPI.RepositoryService.Service
                 userGoogle.IsDeleted = false;
                 userGoogle.IsDisable = false;
 
-                _unitOfWork.UserRepository.CreateUser(userGoogle);
+                _unitOfWork.Users.CreateUser(userGoogle);
                 await _unitOfWork.SaveAsync();
-                var createdUser = await _unitOfWork.UserRepository.FindByCondition(
+                var createdUser = await _unitOfWork.Users.FindByCondition(
                     user => user.Email == payload.Email).FirstOrDefaultAsync();
-                createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
+                createdUser = await _unitOfWork.Users.GetUserByIdAsync(createdUser.Id);
                 return _mapper.Map<UserDTO>(createdUser);
             }
-            user = await _unitOfWork.UserRepository.GetUserByIdAsync(user.Id);
+            user = await _unitOfWork.Users.GetUserByIdAsync(user.Id);
             return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<bool> ChangePasswordAsync(int userId, string newPassword)
         {
-            var user = await _unitOfWork.UserRepository.FindByCondition(
+            var user = await _unitOfWork.Users.FindByCondition(
                 user => user.Id == userId).FirstAsync();
             if (user == null) return false;
             user.Password = _hash.GetHashPassword(newPassword);
@@ -128,7 +128,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<bool> ForgetPasswordAsync(string email)
         {
-            var user = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == email).FirstOrDefaultAsync();
+            var user = await _unitOfWork.Users.FindByCondition(user => user.Email == email).FirstOrDefaultAsync();
             if (user == null || user.IsDeleted == true || user.IsDisable == null)
                 return false;
 
@@ -146,7 +146,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<IEnumerable<UserDTO>> GetAllUserAsync()
         {
             List<UserDTO> list = new List<UserDTO>();
-            var users = await _unitOfWork.UserRepository.GetAllUsersAsync();
+            var users = await _unitOfWork.Users.GetAllUsersAsync();
             foreach(var user in users)
             {
                 list.Add(_mapper.Map<UserDTO>(user));
@@ -156,13 +156,13 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> GetByIdAsync(int id)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByIdAsync(id);
+            var user = await _unitOfWork.Users.GetUserByIdAsync(id);
             return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> RegisterAsync(RegisterModel model)
         {
-            var checkEmailExist = await _unitOfWork.UserRepository.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
+            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
                 .FirstOrDefaultAsync();
             if (checkEmailExist != null)
                 return null;
@@ -183,17 +183,17 @@ namespace WebAPI.RepositoryService.Service
             user.IsDeleted = false;
             user.IsDisable = false;
 
-            _unitOfWork.UserRepository.CreateUser(user);
+            _unitOfWork.Users.CreateUser(user);
             await _unitOfWork.SaveAsync();
-            var createdUser = await _unitOfWork.UserRepository.FindByCondition(
+            var createdUser = await _unitOfWork.Users.FindByCondition(
                 user => user.Email == model.Email).FirstOrDefaultAsync();
-            createdUser = await _unitOfWork.UserRepository.GetUserByIdAsync(createdUser.Id);
+            createdUser = await _unitOfWork.Users.GetUserByIdAsync(createdUser.Id);
             return _mapper.Map<UserDTO>(createdUser);
         }
 
         public async Task<bool> ResetNewPasswordAsync(ResetPasswordModel model)
         {
-            var users = await _unitOfWork.UserRepository.GetAllUsersAsync();
+            var users = await _unitOfWork.Users.GetAllUsersAsync();
             bool flag = false;
             foreach (var user in users)
             {
@@ -201,7 +201,7 @@ namespace WebAPI.RepositoryService.Service
                 {
                     flag = true;
                     user.Password = _hash.GetHashPassword(model.NewPassword);
-                    _unitOfWork.UserRepository.UpdateUser(user);
+                    _unitOfWork.Users.UpdateUser(user);
                     await _unitOfWork.SaveAsync();
                     break;
                 }
@@ -213,7 +213,7 @@ namespace WebAPI.RepositoryService.Service
         {
             try
             {
-                var user = await _unitOfWork.UserRepository.FindByCondition(user => user.Id == userId).FirstOrDefaultAsync();
+                var user = await _unitOfWork.Users.FindByCondition(user => user.Id == userId).FirstOrDefaultAsync();
                 if (image != null && image.Length != 0)
                 {
                     string folder = "user/";

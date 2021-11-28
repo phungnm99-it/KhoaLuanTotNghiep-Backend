@@ -22,7 +22,7 @@ namespace WebAPI.RepositoryService.Service
         }
         public async Task<SubscriberDTO> AddSubscriberAsync(string email)
         {
-            var checkEmailExist = await _unitOfWork.SubscriberRepository
+            var checkEmailExist = await _unitOfWork.Subscribers
                 .GetSubscriberByEmailAsync(email);
             if(checkEmailExist != null)
             {
@@ -37,10 +37,10 @@ namespace WebAPI.RepositoryService.Service
                     return _mapper.Map<SubscriberDTO>(checkEmailExist);
                 }
             }
-            _unitOfWork.SubscriberRepository
+            _unitOfWork.Subscribers
                 .AddSubscriber(new Subscriber { Email = email, Status = true });
             await _unitOfWork.SaveAsync();
-            var sub = await _unitOfWork.SubscriberRepository.GetSubscriberByEmailAsync(email);
+            var sub = await _unitOfWork.Subscribers.GetSubscriberByEmailAsync(email);
 
             MailRequest request = new MailRequest();
             request.ToEmail = email;
@@ -53,7 +53,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<IEnumerable<SubscriberDTO>> GetAllSubscribersAsync()
         {
             List<SubscriberDTO> list = new List<SubscriberDTO>();
-            var subsribers = await _unitOfWork.SubscriberRepository.GetAllSubscribersAsync();
+            var subsribers = await _unitOfWork.Subscribers.GetAllSubscribersAsync();
             foreach (var item in subsribers)
             {
                 list.Add(_mapper.Map<SubscriberDTO>(item));
@@ -63,17 +63,17 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<SubscriberDTO> GetSubscriberByIdAsync(int id)
         {
-            var sub = await _unitOfWork.SubscriberRepository.GetSubscriberByIdAsync(id);
+            var sub = await _unitOfWork.Subscribers.GetSubscriberByIdAsync(id);
             if (sub == null) return null;
             return _mapper.Map<SubscriberDTO>(sub);
         }
 
         public async Task<bool> RemoveSubscriberAsync(int id)
         {
-            var sub = await _unitOfWork.SubscriberRepository.GetSubscriberByIdAsync(id);
+            var sub = await _unitOfWork.Subscribers.GetSubscriberByIdAsync(id);
             if (sub == null || sub.Status == false) return false;
             sub.Status = false;
-            _unitOfWork.SubscriberRepository.RemoveSubscriber(sub);
+            _unitOfWork.Subscribers.RemoveSubscriber(sub);
             await _unitOfWork.SaveAsync();
             return true;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 
 namespace WebAPI.ModelDTO
 {
@@ -14,5 +15,7 @@ namespace WebAPI.ModelDTO
         public string Status { get; set; }
         public decimal TotalCost { get; set; }
         public string PaymentMethod { get; set; }
+
+        public List<OrderDetailDTO> Products { get; set; }
     }
 }

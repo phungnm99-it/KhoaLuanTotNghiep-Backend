@@ -27,13 +27,13 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<FeedbackDTO> GetFeedbackByIdAsync(int id)
         {
-            var feedback = await _unitOfWork.FeedbackRepository.GetFeedbackByIdAsync(id);
+            var feedback = await _unitOfWork.Feedbacks.GetFeedbackByIdAsync(id);
             return _mapper.Map<FeedbackDTO>(feedback);
         }
 
         public async Task<IEnumerable<FeedbackDTO>> GetAllFeedbacksAsync()
         {
-            var feedbacks = await _unitOfWork.FeedbackRepository.GetAllFeedbacksAsync();
+            var feedbacks = await _unitOfWork.Feedbacks.GetAllFeedbacksAsync();
             List<FeedbackDTO> list = new List<FeedbackDTO>();
             foreach(var feedback in feedbacks)
             {
@@ -56,21 +56,21 @@ namespace WebAPI.RepositoryService.Service
                 ReplyTime = DateTime.Now,
                 RepliedBy = null
             };
-            _unitOfWork.FeedbackRepository.CreateFeedback(model);
+            _unitOfWork.Feedbacks.CreateFeedback(model);
             await _unitOfWork.SaveAsync();
             return _mapper.Map<FeedbackDTO>(model);
         }
 
         public async Task<FeedbackDTO> ReplyFeedbackAsync(ReplyFeedbackModel model, int adminId)
         {
-            var feedback = await _unitOfWork.FeedbackRepository.GetFeedbackByIdAsync(model.Id);
+            var feedback = await _unitOfWork.Feedbacks.GetFeedbackByIdAsync(model.Id);
             if (feedback == null || feedback.IsReplied.GetValueOrDefault() == true)
                 return null;
             feedback.IsReplied = true;
             feedback.RepliedBy = adminId;
             feedback.ReplyContent = model.ReplyContent;
             feedback.ReplyTime = DateTime.Now;
-            _unitOfWork.FeedbackRepository.UpdateFeedback(feedback);
+            _unitOfWork.Feedbacks.UpdateFeedback(feedback);
             await _unitOfWork.SaveAsync();
 
             try

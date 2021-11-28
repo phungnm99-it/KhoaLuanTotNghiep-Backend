@@ -35,6 +35,8 @@ namespace WebAPI.Extension
             services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<ISubscriberRepository, SubsriberRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
 
             services.AddScoped<IUserService, UserService>();
@@ -42,6 +44,7 @@ namespace WebAPI.Extension
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<ISubscriberService, SubscriberService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IOrderService, OrderService>();
 
 
             services.AddScoped<IUploadImage, UploadImageWithCloudinary>();

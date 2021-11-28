@@ -35,15 +35,15 @@ namespace WebAPI.RepositoryService.Service
             ImageUploadResult result = await _uploadImage.UploadImage(brandModel.Image, brandModel.Name, folder) as ImageUploadResult;
             brand.ImageUrl = result.Url.ToString();
             brand.IsDeleted = false;
-            _unitOfWork.BrandRepository.CreateBrand(brand);
+            _unitOfWork.Brands.CreateBrand(brand);
             await _unitOfWork.SaveAsync();
-            brand = await _unitOfWork.BrandRepository.FindByCondition(index => index.Name == brandModel.Name).FirstOrDefaultAsync();
+            brand = await _unitOfWork.Brands.FindByCondition(index => index.Name == brandModel.Name).FirstOrDefaultAsync();
             return _mapper.Map<BrandDTO>(brand);
         }
 
         public async Task<IEnumerable<BrandDTO>> GetAllBrandsAsync()
         {
-            var listBrands = await _unitOfWork.BrandRepository.FindByCondition(index => index.IsDeleted == false).ToListAsync();
+            var listBrands = await _unitOfWork.Brands.FindByCondition(index => index.IsDeleted == false).ToListAsync();
             List<BrandDTO> list = new List<BrandDTO>();
             foreach(var brand in listBrands)
             {
@@ -55,7 +55,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<BrandDTO> GetBrandByIdAsync(int brandId)
         {
-            var brand = await _unitOfWork.BrandRepository.GetBrandByIdAsync(brandId);
+            var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandId);
             if (brand == null || brand.IsDeleted == true) return null;
             return _mapper.Map<BrandDTO>(brand);
         }
@@ -64,7 +64,7 @@ namespace WebAPI.RepositoryService.Service
         {
             if (await IsBrandNameExist(brandModel.Name))
                 return null;
-            var brand = await _unitOfWork.BrandRepository.GetBrandByIdAsync(brandModel.Id);
+            var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandModel.Id);
             if (brand == null || brand.IsDeleted == true)
                 return null;
 
@@ -75,7 +75,7 @@ namespace WebAPI.RepositoryService.Service
                 ImageUploadResult result = await _uploadImage.UploadImage(brandModel.Image, brandModel.Name, folder) as ImageUploadResult;
                 brand.ImageUrl = result.Url.ToString();
             }
-            _unitOfWork.BrandRepository.UpdateBrand(brand);
+            _unitOfWork.Brands.UpdateBrand(brand);
             await _unitOfWork.SaveAsync();
             return _mapper.Map<BrandDTO>(brand);
         }
@@ -83,7 +83,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<bool> IsBrandNameExist(string brandName)
         {
-            var checkBrandNameExist = await _unitOfWork.BrandRepository.FindByCondition(index => index.Name == brandName)
+            var checkBrandNameExist = await _unitOfWork.Brands.FindByCondition(index => index.Name == brandName)
                 .FirstOrDefaultAsync();
             if (checkBrandNameExist == null)
                 return false;
@@ -92,29 +92,29 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<bool> DeleteBrandAsync(int brandId)
         {
-            var brand = await _unitOfWork.BrandRepository.GetBrandByIdAsync(brandId);
+            var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandId);
             if (brand == null || brand.IsDeleted == true)
                 return false;
             brand.IsDeleted = true;
-            _unitOfWork.BrandRepository.DeleteBrand(brand);
+            _unitOfWork.Brands.DeleteBrand(brand);
             await _unitOfWork.SaveAsync();
             return true;
         }
 
         public async Task<bool> RestoreBrandAsync(int brandId)
         {
-            var brand = await _unitOfWork.BrandRepository.GetBrandByIdAsync(brandId);
+            var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandId);
             if (brand == null || brand.IsDeleted == false)
                 return false;
             brand.IsDeleted = false;
-            _unitOfWork.BrandRepository.DeleteBrand(brand);
+            _unitOfWork.Brands.DeleteBrand(brand);
             await _unitOfWork.SaveAsync();
             return true;
         }
 
         public async Task<IEnumerable<BrandDTO>> GetActiveBrandAsync()
         {
-            var brands = await _unitOfWork.BrandRepository.FindByCondition(brand => brand.Products.Count > 0).ToListAsync();
+            var brands = await _unitOfWork.Brands.FindByCondition(brand => brand.Products.Count > 0).ToListAsync();
             List<BrandDTO> list = new List<BrandDTO>();
             foreach (var brand in brands)
             {
