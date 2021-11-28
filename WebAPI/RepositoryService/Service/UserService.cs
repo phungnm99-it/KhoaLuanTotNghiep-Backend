@@ -157,7 +157,7 @@ namespace WebAPI.RepositoryService.Service
             request.ToEmail = email;
             request.Subject = "[PT Store] Reset mật khẩu";
             request.Body = "Truy cập đường link bên dưới để reset mật khẩu <br/>";
-            request.Body += "https://localhost/resetPassword/" + hashId;
+            request.Body += "http://localhost:3000/resetPassword/" + hashId;
             await _mailService.SendEmailAsync(request);
 
             return true;
