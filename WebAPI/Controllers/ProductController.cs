@@ -245,7 +245,7 @@ namespace WebAPI.Controllers
 
         [Route("review/create")]
         [HttpPost]
-        public async Task<IActionResult> CreateReviewAsync(ReviewModel model)
+        public async Task<IActionResult> CreateReviewAsync([FromForm] ReviewModel model)
         {
             var user = HttpContext.Items["User"] as UserDTO;
             model.UserId = user.Id;

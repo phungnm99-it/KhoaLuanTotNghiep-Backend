@@ -23,7 +23,7 @@ namespace WebAPI.RepositoryService.Service
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
-                if (order == null)
+                if (order == null || order.IsCompleted == true || order.Status.Equals("Giao hàng thành công")) 
                     return false;
                 StatusUpdateOrder st = new StatusUpdateOrder()
                 {
@@ -222,7 +222,7 @@ namespace WebAPI.RepositoryService.Service
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
-                if (order == null)
+                if (order == null || order.IsCompleted == true || order.Status.Equals("Đã xác nhận"))
                     return false;
                 StatusUpdateOrder st = new StatusUpdateOrder()
                 {

@@ -485,6 +485,10 @@ namespace WebAPI.RepositoryService.Service
                 var check = await CheckUserIdIfBuyProductId(model.UserId, model.ProductId);
                 if (check == false)
                     return false;
+                var r = await _unitOfWork.Reviews.GetAllOwnReviews(model.UserId);
+                r = r.Where(va => va.ProductId == model.ProductId);
+                if (r.Count() != 0)
+                    return false;
                 Review rv = new Review()
                 {
                     ProductId = model.ProductId,

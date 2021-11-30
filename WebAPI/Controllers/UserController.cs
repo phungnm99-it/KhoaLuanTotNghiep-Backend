@@ -92,6 +92,16 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = list });
         }
 
+        [Authorize(Roles = RoleHelper.User)]
+        [Route("getReview")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllReview()
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var list = await _userService.GetAllOwnReviews(user.Id);
+            return new OkObjectResult(new { code = "200", data = list });
+        }
+
         [Authorize(Roles = RoleHelper.Admins)]
         [Route("{id}")]
         [HttpGet]
@@ -114,6 +124,19 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CreateAdminAccount([FromForm] RegisterModel model)
         {
             var user = await _userService.AddAdminAccountAsync(model);
+            if (user == null)
+            {
+                return new ObjectResult(new { code = 401, message = "Email exists" });
+            }
+            return new ObjectResult(new { code = 200, data = user });
+        }
+
+        [Authorize(Roles = RoleHelper.SuperAdmin)]
+        [Route("createShipperAccount")]
+        [HttpPost]
+        public async Task<IActionResult> CreateShipperAccount([FromForm] RegisterModel model)
+        {
+            var user = await _userService.AddShipperAccountAsync(model);
             if (user == null)
             {
                 return new ObjectResult(new { code = 401, message = "Email exists" });

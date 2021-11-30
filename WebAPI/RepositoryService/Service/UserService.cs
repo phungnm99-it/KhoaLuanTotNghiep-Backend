@@ -66,6 +66,37 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<UserDTO>(createdUser);
         }
 
+        public async Task<UserDTO> AddShipperAccountAsync(RegisterModel model)
+        {
+            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
+                .FirstOrDefaultAsync();
+            if (checkEmailExist != null)
+                return null;
+            User user = new User();
+            user.Username = model.Username;
+            user.Email = model.Email;
+            user.Gender = model.Gender;
+            user.Password = _hash.GetHashPassword(model.Password);
+            user.FullName = model.FullName;
+            user.Birthday = model.Birthday;
+            user.Address = model.Address;
+            user.PhoneNumber = model.PhoneNumber;
+            user.ImageUrl = "";
+            user.IsEmailConfirmed = false;
+
+            user.RoleId = Helper.RoleHelper.ShipperRoleId;
+            user.CreatedDate = DateTime.Now;
+            user.IsDeleted = false;
+            user.IsDisable = false;
+
+            _unitOfWork.Users.CreateUser(user);
+            await _unitOfWork.SaveAsync();
+            var createdUser = await _unitOfWork.Users.FindByCondition(
+                user => user.Email == model.Email).FirstOrDefaultAsync();
+            createdUser = await _unitOfWork.Users.GetUserByIdAsync(createdUser.Id);
+            return _mapper.Map<UserDTO>(createdUser);
+        }
+
         public async Task<UserDTO> AuthenticateAdminAsync(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
@@ -161,6 +192,24 @@ namespace WebAPI.RepositoryService.Service
             await _mailService.SendEmailAsync(request);
 
             return true;
+        }
+
+        public async Task<List<ReviewDTO>> GetAllOwnReviews(int userId)
+        {
+            try
+            {
+                var reviews = await _unitOfWork.Reviews.GetAllOwnReviews(userId);
+                List<ReviewDTO> list = new List<ReviewDTO>();
+                foreach(var item in reviews)
+                {
+                    list.Add(_mapper.Map<ReviewDTO>(item));
+                }
+                return list;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllUserAsync()

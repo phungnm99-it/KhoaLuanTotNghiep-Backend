@@ -17,11 +17,14 @@ namespace WebAPI.RepositoryService.Interface
         Task<IEnumerable<UserDTO>> GetAllUserAsync();
         Task<UserDTO> GetByIdAsync(int id);
         Task<UserDTO> AddAdminAccountAsync(RegisterModel model);
+        Task<UserDTO> AddShipperAccountAsync(RegisterModel model);
         Task<bool> ChangePasswordAsync(int userId, string newPassword);
         Task<bool> ResetNewPasswordAsync(ResetPasswordModel model);
         Task<bool> ForgetPasswordAsync(string email);
         public Task<bool> UploadImageAsync(IFormFile image, int userId);
 
         Task<UserDTO> AuthenticateAdminAsync(string username, string password);
+
+        Task<List<ReviewDTO>> GetAllOwnReviews(int userId);
     }
 }
