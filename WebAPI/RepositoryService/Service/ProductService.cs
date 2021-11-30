@@ -313,7 +313,7 @@ namespace WebAPI.RepositoryService.Service
             return list;
         }
 
-        public async Task<IEnumerable<ProductDTO>> FindProductsByBrandName(string brandName)
+        public async Task<IEnumerable<ProductDTO>> FindProductsByBrandNameAsync(string brandName)
         {
             var brand = await _unitOfWork.Brands
                 .FindByCondition(brand => brand.Name.ToLower() == brandName.ToLower())
@@ -331,7 +331,7 @@ namespace WebAPI.RepositoryService.Service
             return list;
         }
 
-        public async Task<IEnumerable<ProductDTO>> FindProductsByProductName(string productName)
+        public async Task<IEnumerable<ProductDTO>> FindProductsByProductNameAsync(string productName)
         {
             var products = await _unitOfWork.Products
                 .FindByCondition(index => index.Name.ToLower().Contains(productName.ToLower()))
@@ -389,7 +389,7 @@ namespace WebAPI.RepositoryService.Service
             
         };
 
-        public async Task<IEnumerable<ProductDTO>> GetSimilarProducts(int id)
+        public async Task<IEnumerable<ProductDTO>> GetSimilarProductsAsync(int id)
         {
             var products = await _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
             && product.Stock > 0).Include(index => index.Brand).OrderBy(product => product.Price).ToListAsync();
@@ -422,7 +422,7 @@ namespace WebAPI.RepositoryService.Service
             
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetActiveProducts(SortModel sortModel)
+        public async Task<IEnumerable<ProductDTO>> GetActiveProductsAsync(SortModel sortModel)
         {
             var products = _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
             && product.Stock > 0);
@@ -454,6 +454,52 @@ namespace WebAPI.RepositoryService.Service
                     list.Add(_mapper.Map<ProductDTO>(productList[i]));
             }
             return list;
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetAllReviewsByProductIdAsync(int productId)
+        {
+            var reviews = await _unitOfWork.Reviews.GetAllReviewsByProductId(productId);
+            if (reviews == null)
+                return null;
+            List<ReviewDTO> rev = new List<ReviewDTO>();
+            foreach(var item in reviews)
+            {
+                rev.Add(_mapper.Map<ReviewDTO>(item));
+            }
+            return rev;
+        }
+
+        public async Task<bool> CheckUserIdIfBuyProductId(int userId, int productId)
+        {
+            var orderByProductId = await _unitOfWork.OrderDetails.GetOrderDetailByProductId(productId);
+            var check = orderByProductId.Where(or => or.Order.UserId == userId && or.Order.IsCompleted == true);
+            if (check == null || check.Count() == 0)
+                return false;
+            return true;
+        }
+
+        public async Task<bool> CreateReview(ReviewModel model)
+        {
+            try
+            {
+                var check = await CheckUserIdIfBuyProductId(model.UserId, model.ProductId);
+                if (check == false)
+                    return false;
+                Review rv = new Review()
+                {
+                    ProductId = model.ProductId,
+                    UserId = model.UserId,
+                    Content = model.Content,
+                    ReviewTime = DateTime.Now
+                };
+                _unitOfWork.Reviews.CreateReview(rv);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         //public async Task<string> Modify(IFormFile file)

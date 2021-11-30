@@ -22,5 +22,11 @@ namespace WebAPI.Repository
             return await FindByCondition(detail => detail.OrderId == id).Include(detail => detail.Product)
                 .Include(detail => detail.Order).ToListAsync();
         }
+
+        public async Task<IEnumerable<OrderDetail>> GetOrderDetailByProductId(int productId)
+        {
+            return await FindByCondition(dt => dt.ProductId == productId)
+                .Include(dt => dt.Order).ToListAsync();
+        }
     }
 }

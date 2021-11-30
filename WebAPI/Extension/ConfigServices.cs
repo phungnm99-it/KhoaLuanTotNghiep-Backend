@@ -37,6 +37,8 @@ namespace WebAPI.Extension
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IStatusUpdateOrder, StatusUpdateOrderRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
             services.AddScoped<IUserService, UserService>();

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.DataModel;
+using WebAPI.Helper;
 using WebAPI.ModelDTO;
 using WebAPI.Models;
 using WebAPI.RepositoryService.Interface;
@@ -41,6 +42,40 @@ namespace WebAPI.Controllers
             var user = HttpContext.Items["User"] as UserDTO;
             var result = await _orderService.GetOwnerOrders(user.Id);
             return new ObjectResult(new { code = 200, data = result });
+        }
+
+
+        [Route("{id}")]
+        [HttpGet]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.GetOrderByIdAsync(id, user.Id, user.RoleName);
+            return new ObjectResult(new { code = 200, data = result });
+        }
+
+        [Authorize(Roles = RoleHelper.Admins)]
+        [Route("verify/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> VerifyOrderByAdmin(int id)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.VerifyOrderByAdminAsync(id, user.Id);
+            if (result == false)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+            return new ObjectResult(new { code = 200, message = "Success" });
+        }
+
+        [Authorize(Roles = RoleHelper.Shipper)]
+        [Route("complete/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> CompleteOrderByShipper(int id)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.CompleteOrderByShipper(id, user.Id);
+            if (result == false)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+            return new ObjectResult(new { code = 200, message = "Success" });
         }
     }
 }

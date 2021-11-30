@@ -17,6 +17,37 @@ namespace WebAPI.RepositoryService.Service
         {
             _unitOfWork = unitOfWork;
         }
+
+        public async Task<bool> CompleteOrderByShipper(int orderId, int shipperId)
+        {
+            try
+            {
+                var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
+                if (order == null)
+                    return false;
+                StatusUpdateOrder st = new StatusUpdateOrder()
+                {
+                    OrderId = orderId,
+                    UpdatedBy = shipperId,
+                    Detail = "Giao hàng thành công",
+                    UpdatedTime = DateTime.Now
+                };
+
+                order.Status = "Giao hàng thành công";
+                order.IsCompleted = true;
+                order.UpdatedTime = DateTime.Now;
+                order.UpdatedBy = shipperId;
+                _unitOfWork.Orders.UpdateOrder(order);
+                _unitOfWork.StatusUpdateOrders.CreateStatusUpdateOrder(st);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> CreateOrder(OrderModel order)
         {
             foreach(var item in order.ProductList)
@@ -91,14 +122,60 @@ namespace WebAPI.RepositoryService.Service
             }
         }
 
-        public Task<IEnumerable<OrderDTO>> GetAllOrdersAsync()
+        public async Task<IEnumerable<OrderDTO>> GetAllOrdersAsync()
         {
-            throw new NotImplementedException();
+            var orders = await _unitOfWork.Orders.GetAllOrdersAsync();
+            List<OrderDTO> orderDTOs = new List<OrderDTO>();
+            foreach(var item in orders)
+            {
+                orderDTOs.Add(new OrderDTO
+                {
+                    Id = item.Id,
+                    Address = item.Address,
+                    OrderCode = item.OrderCode,
+                    PaymentMethod = item.PaymentMethod,
+                    PhoneNumber = item.PhoneNumber,
+                    Status = item.Status,
+                    TotalCost = item.TotalCost
+                });
+            }
+            return orderDTOs;
         }
 
-        public Task<OrderDTO> GetOrderByIdAsync(int id)
+        public async Task<OrderDTO> GetOrderByIdAsync(int id, int userId, string role)
         {
-            throw new NotImplementedException();
+            var order = await _unitOfWork.Orders.GetOrderByIdAsync(id);
+            if (order == null)
+                return null;
+            if (role == Helper.RoleHelper.User && order.UserId != userId)
+                return null;
+            OrderDTO orderDTO = new OrderDTO()
+            {
+                Id = order.Id,
+                Address = order.Address,
+                OrderCode = order.OrderCode,
+                PaymentMethod = order.PaymentMethod,
+                PhoneNumber = order.PhoneNumber,
+                TotalCost = order.TotalCost,
+                Status = order.Status
+            };
+
+            orderDTO.Products = new List<OrderDetailDTO>();
+            var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(order.Id);
+            foreach (var detail in orderDetail)
+            {
+                OrderDetailDTO de = new OrderDetailDTO()
+                {
+                    ProductId = detail.ProductId.GetValueOrDefault(),
+                    ProductName = detail.Product.Name,
+                    Quantity = detail.Quantity.GetValueOrDefault(),
+                    Price = detail.Price,
+                    IsSale = detail.IsSale.GetValueOrDefault(),
+                    CurrentPrice = detail.CurrentPrice
+                };
+                orderDTO.Products.Add(de);
+            }
+            return orderDTO;
         }
 
         public async Task<List<OrderDTO>> GetOwnerOrders(int userId)
@@ -140,9 +217,33 @@ namespace WebAPI.RepositoryService.Service
             return orderDTOs;
         }
 
-        public void UpdateOrder(OrderDTO order)
+        public async Task<bool> VerifyOrderByAdminAsync(int orderId, int adminId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
+                if (order == null)
+                    return false;
+                StatusUpdateOrder st = new StatusUpdateOrder()
+                {
+                    OrderId = orderId,
+                    UpdatedBy = adminId,
+                    Detail = "Xác nhận đơn hàng",
+                    UpdatedTime = DateTime.Now
+                };
+
+                order.Status = "Đã xác nhận";
+                order.UpdatedTime = DateTime.Now;
+                order.UpdatedBy = adminId;
+                _unitOfWork.Orders.UpdateOrder(order);
+                _unitOfWork.StatusUpdateOrders.CreateStatusUpdateOrder(st);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

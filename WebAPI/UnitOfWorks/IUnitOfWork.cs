@@ -19,6 +19,8 @@ namespace WebAPI.UnitOfWorks
 
         IOrderRepository Orders { get; set; }
         IOrderDetailRepository OrderDetails { get; set; }
+        IStatusUpdateOrder StatusUpdateOrders { get; set; }
+        IReviewRepository Reviews { get; set; }
         Task SaveAsync();
     }
 }

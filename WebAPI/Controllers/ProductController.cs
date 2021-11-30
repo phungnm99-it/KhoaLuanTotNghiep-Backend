@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.DataModel;
+using WebAPI.Helper;
 using WebAPI.ModelDTO;
 using WebAPI.RepositoryService.Interface;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : Controller
@@ -19,6 +22,8 @@ namespace WebAPI.Controllers
         {
             _service = service;
         }
+
+        [AllowAnonymous]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetProductById(int id)
@@ -27,6 +32,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = product });
         }
 
+        [AllowAnonymous]
         [Route("")]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
@@ -35,6 +41,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("create")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] ProductModel productModel)
@@ -47,6 +54,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = product });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("update")]
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromForm] ProductUpdateModel productModel)
@@ -59,6 +67,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = product });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("delete")]
         [HttpPatch]
         public async Task<IActionResult> DeleteProduct([FromForm] int id)
@@ -71,6 +80,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, message = "Success!" });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("productstock")]
         [HttpGet]
         public async Task<IActionResult> GetAllProductsWithStock()
@@ -79,6 +89,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("productstock/{id}")]
         [HttpGet]
         public async Task<IActionResult> GetProductWithStock(int id)
@@ -88,6 +99,7 @@ namespace WebAPI.Controllers
         }
 
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("productstock/update")]
         [HttpPut]
         public async Task<IActionResult> UpdateProductWithStock([FromForm] ProductStockManager productStock)
@@ -100,7 +112,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = product });
         }
 
-
+        [AllowAnonymous]
         [Route("featureproduct")]
         [HttpGet]
         public async Task<IActionResult> GetFeatureProducts()
@@ -109,6 +121,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("featureproduct/add")]
         [HttpPut]
         public async Task<IActionResult> AddFeatureProductById([FromForm]int id)
@@ -121,6 +134,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, message = "Success!" });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("featureproduct/remove")]
         [HttpPut]
         public async Task<IActionResult> RemoveFeatureProductById([FromForm] int id)
@@ -133,7 +147,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, message = "Success!" });
         }
 
-
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("productprice")]
         [HttpGet]
         public async Task<IActionResult> GetAllProductsWithPrice()
@@ -142,6 +156,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("productprice/{id}")]
         [HttpGet]
         public async Task<IActionResult> GetProductWithPrice(int id)
@@ -150,7 +165,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = product });
         }
 
-
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("productprice/update")]
         [HttpPut]
         public async Task<IActionResult> UpdateProductWithPrice([FromForm] ProductPriceManager productPrice)
@@ -163,6 +178,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = product });
         }
 
+        [AllowAnonymous]
         [Route("sale")]
         [HttpGet]
         public async Task<IActionResult> GetAllSaleProduct()
@@ -171,19 +187,21 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [AllowAnonymous]
         [Route("brand/{brandname}")]
         [HttpGet]
         public async Task<IActionResult> FindAllProductsByBrandName(string brandName)
         {
-            var products = await _service.FindProductsByBrandName(brandName);
+            var products = await _service.FindProductsByBrandNameAsync(brandName);
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [AllowAnonymous]
         [Route("name={productname}")]
         [HttpGet]
         public async Task<IActionResult> FindAllProductsByProductName(string productname)
         {
-            var products = await _service.FindProductsByProductName(productname);
+            var products = await _service.FindProductsByProductNameAsync(productname);
             return new ObjectResult(new { code = 200, data = products });
         }
         //[Route("fix")]
@@ -198,21 +216,45 @@ namespace WebAPI.Controllers
         //    return new ObjectResult(new { code = 200, data = product });
         //}
 
+        [AllowAnonymous]
         [Route("similar/{id}")]
         [HttpGet]
         public async Task<IActionResult> GetSimilarProducts(int id)
         {
-            var products = await _service.GetSimilarProducts(id);
+            var products = await _service.GetSimilarProductsAsync(id);
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [AllowAnonymous]
         [Route("")]
         [HttpPost]
         public async Task<IActionResult> GetActiveProducts([FromBody] SortModel model)
         {
-            var products = await _service.GetActiveProducts(model);
+            var products = await _service.GetActiveProductsAsync(model);
             return new ObjectResult(new { code = 200, data = products });
         }
 
+        [Route("checkIfBuy/{productId}")]
+        [HttpGet]
+        public async Task<IActionResult> CheckIfUserBuyProductAsync(int productId)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _service.CheckUserIdIfBuyProductId(user.Id, productId);
+            return new ObjectResult(new { code = 200, data = result });
+        }
+
+        [Route("review/create")]
+        [HttpPost]
+        public async Task<IActionResult> CreateReviewAsync(ReviewModel model)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            model.UserId = user.Id;
+            var result = await _service.CreateReview(model);
+            if (!result)
+            {
+                return new ObjectResult(new { code = 401, message = "Fail" });
+            }
+            return new ObjectResult(new { code = 200, message = "Success!" });
+        }
     }
 }

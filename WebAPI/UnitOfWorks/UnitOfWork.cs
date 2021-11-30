@@ -19,6 +19,9 @@ namespace WebAPI.UnitOfWorks
         public IOrderRepository Orders { get; set; }
         public IOrderDetailRepository OrderDetails { get; set; }
 
+        public IStatusUpdateOrder StatusUpdateOrders { get; set; }
+        public IReviewRepository Reviews { get; set; }
+
         public UnitOfWork(PTStoreContext context,
             IProductRepository productRepository,
             IUserRepository userRepository,
@@ -26,7 +29,9 @@ namespace WebAPI.UnitOfWorks
             ISubscriberRepository subscriberRepository,
             IFeedbackRepository feedbackRepository,
             IOrderRepository orderRepository,
-            IOrderDetailRepository orderDetailRepository)
+            IOrderDetailRepository orderDetailRepository,
+            IStatusUpdateOrder statusUpdateOrders,
+            IReviewRepository reviewRepo)
         {
             RepositoryContext = context;
             Products = productRepository;
@@ -36,6 +41,8 @@ namespace WebAPI.UnitOfWorks
             Feedbacks = feedbackRepository;
             Orders = orderRepository;
             OrderDetails = orderDetailRepository;
+            StatusUpdateOrders = statusUpdateOrders;
+            Reviews = reviewRepo;
         }
 
         public async Task SaveAsync()
