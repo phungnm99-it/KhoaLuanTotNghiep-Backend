@@ -56,5 +56,7 @@ namespace WebAPI.RepositoryService.Interface
 
         public Task<bool> CreateReview(ReviewModel model);
         public Task<bool> CheckUserIdIfBuyProductId(int userId, int productId);
+
+        public Task<bool> CheckUserBuyProductButNotReview(int userId, int productId);
     }
 }

@@ -458,7 +458,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<IEnumerable<ReviewDTO>> GetAllReviewsByProductIdAsync(int productId)
         {
-            var reviews = await _unitOfWork.Reviews.GetAllReviewsByProductId(productId);
+            var reviews = await _unitOfWork.Reviews.GetAllReviewsByProductIdAsync(productId);
             if (reviews == null)
                 return null;
             List<ReviewDTO> rev = new List<ReviewDTO>();
@@ -485,7 +485,7 @@ namespace WebAPI.RepositoryService.Service
                 var check = await CheckUserIdIfBuyProductId(model.UserId, model.ProductId);
                 if (check == false)
                     return false;
-                var r = await _unitOfWork.Reviews.GetAllOwnReviews(model.UserId);
+                var r = await _unitOfWork.Reviews.GetAllOwnReviewsAsync(model.UserId);
                 r = r.Where(va => va.ProductId == model.ProductId);
                 if (r.Count() != 0)
                     return false;
@@ -504,6 +504,17 @@ namespace WebAPI.RepositoryService.Service
             {
                 return false;
             }
+        }
+
+        public async Task<bool> CheckUserBuyProductButNotReview(int userId, int productId)
+        {
+            var checkbuy = await CheckUserIdIfBuyProductId(userId, productId);
+            if (checkbuy == false)
+                return false;
+            var checkReview = await _unitOfWork.Reviews.GetReviewByUserIdAndProductIdAsync(userId, productId);
+            if (checkReview != null)
+                return false;
+            return true;
         }
 
         //public async Task<string> Modify(IFormFile file)

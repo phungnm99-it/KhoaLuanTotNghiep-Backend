@@ -198,7 +198,7 @@ namespace WebAPI.RepositoryService.Service
         {
             try
             {
-                var reviews = await _unitOfWork.Reviews.GetAllOwnReviews(userId);
+                var reviews = await _unitOfWork.Reviews.GetAllOwnReviewsAsync(userId);
                 List<ReviewDTO> list = new List<ReviewDTO>();
                 foreach(var item in reviews)
                 {

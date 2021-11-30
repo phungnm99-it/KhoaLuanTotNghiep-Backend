@@ -17,7 +17,7 @@ namespace WebAPI.Repository
             Create(review);
         }
 
-        public async Task<IEnumerable<Review>> GetAllOwnReviews(int userId)
+        public async Task<IEnumerable<Review>> GetAllOwnReviewsAsync(int userId)
         {
             return await FindByCondition(review => review.UserId == userId)
                 .Include(rv => rv.Product)
@@ -25,12 +25,20 @@ namespace WebAPI.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Review>> GetAllReviewsByProductId(int productId)
+        public async Task<IEnumerable<Review>> GetAllReviewsByProductIdAsync(int productId)
         {
             return await FindByCondition(review => review.ProductId == productId)
                 .Include(rv => rv.Product)
                 .Include(rv => rv.User)
                 .ToListAsync();
+        }
+
+        public async Task<Review> GetReviewByUserIdAndProductIdAsync(int userId, int productId)
+        {
+            return await FindByCondition(review => review.ProductId == productId && review.UserId == userId)
+                .Include(rv => rv.Product)
+                .Include(rv => rv.User)
+                .FirstOrDefaultAsync();
         }
 
         public void UpdateReview(Review review)

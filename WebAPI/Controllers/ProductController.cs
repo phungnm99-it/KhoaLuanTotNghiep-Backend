@@ -256,5 +256,18 @@ namespace WebAPI.Controllers
             }
             return new ObjectResult(new { code = 200, message = "Success!" });
         }
+
+        [Route("checkCanReview/{productId}")]
+        [HttpGet]
+        public async Task<IActionResult> CheckIfUserBuyButNotReviewAsync(int productId)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _service.CheckUserBuyProductButNotReview(user.Id, productId);
+            if (!result)
+            {
+                return new ObjectResult(new { code = 401, message = "Fail" });
+            }
+            return new ObjectResult(new { code = 200, message = "Success!" });
+        }
     }
 }

@@ -8,9 +8,10 @@ namespace WebAPI.Repository.Interface
 {
     public interface IReviewRepository
     {
-        Task<IEnumerable<Review>> GetAllReviewsByProductId(int productId);
-        Task<IEnumerable<Review>> GetAllOwnReviews(int userId);
+        Task<IEnumerable<Review>> GetAllReviewsByProductIdAsync(int productId);
+        Task<IEnumerable<Review>> GetAllOwnReviewsAsync(int userId);
         void CreateReview(Review review);
         void UpdateReview(Review review);
+        Task<Review> GetReviewByUserIdAndProductIdAsync(int userId, int productId);
     }
 }
