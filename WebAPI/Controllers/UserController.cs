@@ -146,11 +146,14 @@ namespace WebAPI.Controllers
 
         [Route("changePassword")]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword([FromForm] string newPassword)
+        public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordModel model)
         {
             var userId = (HttpContext.Items["User"] as UserDTO).Id;
-            await _userService.ChangePasswordAsync(userId, newPassword);
-            return new ObjectResult(new { code = 200 });
+            var result = await _userService.ChangePasswordAsync(userId, model);
+            if (!result)
+                return new ObjectResult(new { code = "401", message = "Error" });
+
+            return new ObjectResult(new { code = "200", message = "Success" });
         }
 
         [AllowAnonymous]

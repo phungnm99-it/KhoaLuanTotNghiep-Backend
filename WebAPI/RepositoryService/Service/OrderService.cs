@@ -195,6 +195,7 @@ namespace WebAPI.RepositoryService.Service
                     PaymentMethod = item.PaymentMethod,
                     PhoneNumber = item.PhoneNumber,
                     TotalCost = item.TotalCost,
+                    OrderTime = item.OrderTime,
                     Status = item.Status
                 };
                 orderDTO.Products = new List<OrderDetailDTO>();

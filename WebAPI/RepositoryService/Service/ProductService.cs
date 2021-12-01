@@ -303,7 +303,7 @@ namespace WebAPI.RepositoryService.Service
         {
             var products = await _unitOfWork.Products
                 .FindByCondition(index => index.IsDeleted == false && index.IsSale == true)
-                .Include(index => index.Brand)
+                .Include(index => index.Brand).Take(8)
                 .ToListAsync();
             List<ProductDTO> list = new List<ProductDTO>();
             foreach (var product in products)

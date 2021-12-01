@@ -167,14 +167,24 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<UserDTO>(user);
         }
 
-        public async Task<bool> ChangePasswordAsync(int userId, string newPassword)
+        public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordModel model)
         {
-            var user = await _unitOfWork.Users.FindByCondition(
+            try
+            {
+                var user = await _unitOfWork.Users.FindByCondition(
                 user => user.Id == userId).FirstAsync();
-            if (user == null) return false;
-            user.Password = _hash.GetHashPassword(newPassword);
-            await _unitOfWork.SaveAsync();
-            return true;
+                if (user == null) return false;
+                if (!user.Password.Equals(_hash.GetHashPassword(model.OldPassword)))
+                    return false;
+                user.Password = _hash.GetHashPassword(model.NewPassword);
+                _unitOfWork.Users.UpdateUser(user);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<bool> ForgetPasswordAsync(string email)
@@ -231,7 +241,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> RegisterAsync(RegisterModel model)
         {
-            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
+            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.PhoneNumber == model.PhoneNumber || user.Email == model.Email || user.Username == model.Username)
                 .FirstOrDefaultAsync();
             if (checkEmailExist != null)
                 return null;
@@ -285,9 +295,11 @@ namespace WebAPI.RepositoryService.Service
                 var user = await _unitOfWork.Users.FindByCondition(user => user.Id == userId).FirstOrDefaultAsync();
                 if (image != null && image.Length != 0)
                 {
-                    string folder = "user/";
-                    ImageUploadResult result = await _uploadImage.UploadImage(image, user.Email, folder) as ImageUploadResult;
+                    string folder = "user/" + user.Id.ToString() + "/";
+                    ImageUploadResult result = await _uploadImage.UploadImage(image, DateTime.Now.Ticks.ToString(), folder) as ImageUploadResult;
                     user.ImageUrl = result.Url.ToString();
+                    _unitOfWork.Users.UpdateUser(user);
+                    await _unitOfWork.SaveAsync();
                 }
                 return true;
             }

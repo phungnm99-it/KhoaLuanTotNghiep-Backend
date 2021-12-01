@@ -14,7 +14,9 @@ namespace WebAPI.AutoMapper
         {
             CreateMap<Review, ReviewDTO>()
                 .ForMember(des => des.ProductName, opt => opt.MapFrom(value => value.Product.Name))
+                .ForMember(des => des.ImageUrl, opt => opt.MapFrom(value => value.User.ImageUrl))
                 .ForMember(des => des.UserName, opt => opt.MapFrom(value => value.User.FullName));
+            
         }
     }
 }
