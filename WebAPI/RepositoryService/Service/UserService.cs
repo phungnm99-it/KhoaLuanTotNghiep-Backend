@@ -288,6 +288,42 @@ namespace WebAPI.RepositoryService.Service
             return flag;
         }
 
+        public async Task<UserDTO> UpdateInfo(UpdateUserModel model)
+        {
+            try
+            {
+                var currentUser = await _unitOfWork.Users.GetUserByIdAsync(model.Id);
+                if (currentUser == null)
+                    return null;
+               if(!string.IsNullOrEmpty(model.Address))
+                {
+                    currentUser.Address = model.Address;
+                }
+               if(!string.IsNullOrEmpty(model.FullName))
+                {
+                    currentUser.FullName = model.FullName;
+                }
+               if(!string.IsNullOrEmpty(model.Gender))
+                {
+                    currentUser.Gender = model.Gender;
+                }
+
+               if(model.Birthday < DateTime.Now && model.Birthday > (new DateTime(1900,1,1)))
+                {
+                    currentUser.Birthday = model.Birthday;
+                }
+
+                _unitOfWork.Users.UpdateUser(currentUser);
+                await _unitOfWork.SaveAsync();
+                return _mapper.Map<UserDTO>(currentUser);
+            }
+            catch
+            {
+                return null;
+            }
+            
+        }
+
         public async Task<bool> UploadImageAsync(IFormFile image, int userId)
         {
             try

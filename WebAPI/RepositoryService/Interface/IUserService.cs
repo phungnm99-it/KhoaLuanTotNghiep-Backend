@@ -26,5 +26,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<UserDTO> AuthenticateAdminAsync(string username, string password);
 
         Task<List<ReviewDTO>> GetAllOwnReviews(int userId);
+
+        Task<UserDTO> UpdateInfo(UpdateUserModel model);
     }
 }

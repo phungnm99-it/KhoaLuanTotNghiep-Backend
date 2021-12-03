@@ -191,5 +191,19 @@ namespace WebAPI.Controllers
 
             return new ObjectResult(new { code = "200", message = "Success" });
         }
+
+        [Route("update")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            if (user == null || user.Id != model.Id)
+                return new UnauthorizedObjectResult(new { code = "401", message = "Error" });
+            var result = await _userService.UpdateInfo(model);
+            if (result == null)
+                return new ObjectResult(new { code = "401", message = "Error" });
+
+            return new ObjectResult(new { code = "200", data = result });
+        }
     }
 }
