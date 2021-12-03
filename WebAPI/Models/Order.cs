@@ -18,6 +18,7 @@ namespace WebAPI.Models
         public int? UserId { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
+        public string Name { get; set; }
         public string Status { get; set; }
         public bool? IsCompleted { get; set; }
         public decimal TotalCost { get; set; }

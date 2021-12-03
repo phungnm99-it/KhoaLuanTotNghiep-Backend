@@ -69,6 +69,7 @@ namespace WebAPI.RepositoryService.Service
                 model.UserId = order.UserId;
                 model.Address = order.Address;
                 model.PhoneNumber = order.PhoneNumber;
+                model.Name = order.Name;
                 model.Status = "Đặt hàng thành công";
                 model.IsCompleted = false;
                 model.PaymentMethod = order.PaymentMethod;
@@ -135,6 +136,7 @@ namespace WebAPI.RepositoryService.Service
                     OrderCode = item.OrderCode,
                     PaymentMethod = item.PaymentMethod,
                     PhoneNumber = item.PhoneNumber,
+                    Name = item.Name,
                     Status = item.Status,
                     TotalCost = item.TotalCost
                 });
@@ -156,6 +158,7 @@ namespace WebAPI.RepositoryService.Service
                 OrderCode = order.OrderCode,
                 PaymentMethod = order.PaymentMethod,
                 PhoneNumber = order.PhoneNumber,
+                Name = order.Name,
                 TotalCost = order.TotalCost,
                 Status = order.Status
             };
@@ -180,7 +183,8 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<List<OrderDTO>> GetOwnerOrders(int userId)
         {
-            var orders = _unitOfWork.Orders.FindByCondition(order => order.UserId == userId).ToList();
+            var orders = _unitOfWork.Orders.FindByCondition(order => order.UserId == userId)
+                .OrderByDescending(order => order.OrderTime).ToList();
             if (orders == null)
                 return null;
 
@@ -194,6 +198,7 @@ namespace WebAPI.RepositoryService.Service
                     OrderCode = item.OrderCode,
                     PaymentMethod = item.PaymentMethod,
                     PhoneNumber = item.PhoneNumber,
+                    Name = item.Name,
                     TotalCost = item.TotalCost,
                     OrderTime = item.OrderTime,
                     Status = item.Status

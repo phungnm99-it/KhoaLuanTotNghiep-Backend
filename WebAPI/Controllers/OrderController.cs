@@ -28,7 +28,17 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CreateOrder([FromBody] OrderModel orderModel)
         {
             var user = HttpContext.Items["User"] as UserDTO;
+            if (user == null)
+                return new UnauthorizedObjectResult(new { code = 401, message = false });
+
+            if(orderModel.ProductList?.Any() != true)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+
             orderModel.UserId = user.Id;
+            if(orderModel.PaymentMethod == null)
+            {
+                orderModel.PaymentMethod = "Thanh toán trực tiếp";
+            }
             var result = await _orderService.CreateOrder(orderModel);
             if (result == false)
                 return new ObjectResult(new { code = 401, message = "Failed" });
