@@ -58,5 +58,7 @@ namespace WebAPI.RepositoryService.Interface
         public Task<bool> CheckUserIdIfBuyProductId(int userId, int productId);
 
         public Task<bool> CheckUserBuyProductButNotReview(int userId, int productId);
+
+        public Task<List<ReviewDTO>> GetAllReview();
     }
 }

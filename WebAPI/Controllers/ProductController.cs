@@ -279,5 +279,14 @@ namespace WebAPI.Controllers
             var result = await _service.GetAllReviewsByProductIdAsync(productId);
             return new ObjectResult(new { code = 200, message = result });
         }
+
+        [Authorize(Roles =RoleHelper.Admins)]
+        [Route("review/getAll")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllReviews()
+        {
+            var result = await _service.GetAllReview();
+            return new ObjectResult(new { code = 200, data = result });
+        }
     }
 }

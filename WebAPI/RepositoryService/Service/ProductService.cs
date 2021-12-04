@@ -517,6 +517,17 @@ namespace WebAPI.RepositoryService.Service
             return true;
         }
 
+        public async Task<List<ReviewDTO>> GetAllReview()
+        {
+            var list = await _unitOfWork.Reviews.GetAllReviews();
+            List<ReviewDTO> rvs = new List<ReviewDTO>();
+            foreach(var item in list)
+            {
+                rvs.Add(_mapper.Map<ReviewDTO>(item));
+            }
+            return rvs;
+        }
+
         //public async Task<string> Modify(IFormFile file)
         //{
         //    string folder = "product/";

@@ -129,7 +129,7 @@ namespace WebAPI.RepositoryService.Service
             List<OrderDTO> orderDTOs = new List<OrderDTO>();
             foreach(var item in orders)
             {
-                orderDTOs.Add(new OrderDTO
+                OrderDTO orderDTO = new OrderDTO
                 {
                     Id = item.Id,
                     Address = item.Address,
@@ -139,7 +139,23 @@ namespace WebAPI.RepositoryService.Service
                     Name = item.Name,
                     Status = item.Status,
                     TotalCost = item.TotalCost
-                });
+                };
+                orderDTO.Products = new List<OrderDetailDTO>();
+                var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(orderDTO.Id);
+                foreach (var detail in orderDetail)
+                {
+                    OrderDetailDTO de = new OrderDetailDTO()
+                    {
+                        ProductId = detail.ProductId.GetValueOrDefault(),
+                        ProductName = detail.Product.Name,
+                        Quantity = detail.Quantity.GetValueOrDefault(),
+                        Price = detail.Price,
+                        IsSale = detail.IsSale.GetValueOrDefault(),
+                        CurrentPrice = detail.CurrentPrice
+                    };
+                    orderDTO.Products.Add(de);
+                }
+                orderDTOs.Add(orderDTO);
             }
             return orderDTOs;
         }

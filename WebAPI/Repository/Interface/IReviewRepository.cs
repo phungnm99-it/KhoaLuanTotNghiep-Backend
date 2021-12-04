@@ -13,5 +13,7 @@ namespace WebAPI.Repository.Interface
         void CreateReview(Review review);
         void UpdateReview(Review review);
         Task<Review> GetReviewByUserIdAndProductIdAsync(int userId, int productId);
+
+        Task<IEnumerable<Review>> GetAllReviews();
     }
 }
