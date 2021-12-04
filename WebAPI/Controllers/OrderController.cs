@@ -64,6 +64,15 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = result });
         }
 
+        [Authorize(Roles =RoleHelper.Admins)]
+        [Route("getAll")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrdersAsync()
+        {
+            var result = await _orderService.GetAllOrdersAsync();
+            return new ObjectResult(new { code = 200, data = result });
+        }
+
         [Authorize(Roles = RoleHelper.Admins)]
         [Route("verify/{id}")]
         [HttpGet]
