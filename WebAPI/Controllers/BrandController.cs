@@ -81,5 +81,13 @@ namespace WebAPI.Controllers
                 return new ObjectResult(new { code = 401, message = "Restore failed!" });
             return new ObjectResult(new { code = 200, message = "Restore success!" });
         }
+
+        [Route("search")]
+        [HttpPost]
+        public async Task<IActionResult> SearchBrand(string name)
+        {
+            var result = await _brandService.SearchBrand(name);
+            return new ObjectResult(new { code = 200, data = result });
+        }
     }
 }

@@ -13,5 +13,8 @@ namespace WebAPI.RepositoryService.Interface
         Task<IEnumerable<FeedbackDTO>> GetAllFeedbacksAsync();
         Task<FeedbackDTO> CreateFeedbackAsync(FeedbackModel feedback);
         Task<FeedbackDTO> ReplyFeedbackAsync(ReplyFeedbackModel model, int adminId);
+
+        Task<List<FeedbackDTO>> GetFeedbackHasReply();
+        Task<List<FeedbackDTO>> GetFeedbackNoReply();
     }
 }

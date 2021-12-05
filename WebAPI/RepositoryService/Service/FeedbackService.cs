@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,28 @@ namespace WebAPI.RepositoryService.Service
             }
             
             return _mapper.Map<FeedbackDTO>(feedback);
+        }
+
+        public async Task<List<FeedbackDTO>> GetFeedbackHasReply()
+        {
+            List<FeedbackDTO> list = new List<FeedbackDTO>();
+            var fb = await _unitOfWork.Feedbacks.FindByCondition(f => f.IsReplied == true).ToListAsync();
+            foreach(var item in fb)
+            {
+                list.Add(_mapper.Map<FeedbackDTO>(item));
+            }
+            return list;
+        }
+
+        public async Task<List<FeedbackDTO>> GetFeedbackNoReply()
+        {
+            List<FeedbackDTO> list = new List<FeedbackDTO>();
+            var fb = await _unitOfWork.Feedbacks.FindByCondition(f => f.IsReplied == false).ToListAsync();
+            foreach (var item in fb)
+            {
+                list.Add(_mapper.Map<FeedbackDTO>(item));
+            }
+            return list;
         }
     }
 }

@@ -32,6 +32,24 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = RoleHelper.Admins)]
+        [Route("getFeedbackHasReply")]
+        [HttpGet]
+        public async Task<IActionResult> GetFeedbackHasReply()
+        {
+            var list = await _feedbackService.GetFeedbackHasReply();
+            return new OkObjectResult(new { code = "200", data = list });
+        }
+
+        [Authorize(Roles = RoleHelper.Admins)]
+        [Route("getFeedbackNoReply")]
+        [HttpGet]
+        public async Task<IActionResult> GetFeedbackNoReply()
+        {
+            var list = await _feedbackService.GetFeedbackNoReply();
+            return new OkObjectResult(new { code = "200", data = list });
+        }
+
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetById(int id)

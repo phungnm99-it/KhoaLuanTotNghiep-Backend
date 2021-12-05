@@ -123,5 +123,18 @@ namespace WebAPI.RepositoryService.Service
 
             return list;
         }
+
+        public async Task<List<BrandDTO>> SearchBrand(string name)
+        {
+            var listBrands = await _unitOfWork.Brands.FindByCondition(index => index.IsDeleted == false
+            && index.Name.ToLower().Contains(name.ToLower())).ToListAsync();
+            List<BrandDTO> list = new List<BrandDTO>();
+            foreach (var brand in listBrands)
+            {
+                list.Add(_mapper.Map<BrandDTO>(brand));
+            }
+
+            return list;
+        }
     }
 }

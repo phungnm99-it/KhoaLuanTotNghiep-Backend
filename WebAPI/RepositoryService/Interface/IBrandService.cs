@@ -21,5 +21,7 @@ namespace WebAPI.RepositoryService.Interface
         public Task<bool> RestoreBrandAsync(int brandId);
 
         public Task<IEnumerable<BrandDTO>> GetActiveBrandAsync();
+
+        public Task<List<BrandDTO>> SearchBrand(string name);
     }
 }
