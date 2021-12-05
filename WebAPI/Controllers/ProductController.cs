@@ -257,7 +257,6 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, message = "Success!" });
         }
 
-        [AllowAnonymous]
         [Route("checkCanReview/{productId}")]
         [HttpGet]
         public async Task<IActionResult> CheckIfUserBuyButNotReviewAsync(int productId)
@@ -287,6 +286,15 @@ namespace WebAPI.Controllers
         {
             var result = await _service.GetAllReview();
             return new ObjectResult(new { code = 200, data = result });
+        }
+
+        [AllowAnonymous]
+        [Route("filter")]
+        [HttpPost]
+        public async Task<IActionResult> Find(string brand, string priceFilter, string sortType, int page)
+        {
+            var result = await _service.SearchProductsByFilter(brand, priceFilter, sortType, page);
+            return new ObjectResult(new { code = 200, data = result.Item1, count = result.count });
         }
     }
 }

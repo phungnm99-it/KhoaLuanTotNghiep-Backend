@@ -528,6 +528,70 @@ namespace WebAPI.RepositoryService.Service
             return rvs;
         }
 
+        public async Task<(List<ProductDTO>, int count)> SearchProductsByFilter(string brand, string priceFilter, string sortType, int page)
+        {
+            var products = _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
+            && product.Stock > 0);
+            List<ProductDTO> list = new List<ProductDTO>();
+
+            List<Product> rs = new List<Product>();
+            //All
+            if (!string.IsNullOrEmpty(brand))
+            {
+                var currentBrand = await _unitOfWork.Brands.FindByCondition(br => br.Name.ToLower().Contains(brand.ToLower())).FirstOrDefaultAsync();
+                if (currentBrand != null)
+                {
+                    products = products.Where(product => product.BrandId == currentBrand.Id);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(priceFilter))
+            {
+                if (priceFilter == "Duoi5trieu")
+                {
+                    products = products.Where(pro => pro.CurrentPrice < 5000000);
+                }
+                else if (priceFilter == "5trieutoi10trieu")
+                {
+                    products = products.Where(pro => pro.CurrentPrice >= 5000000 && pro.CurrentPrice <= 10000000);
+                }
+                else if (priceFilter == "10trieutoi20trieu")
+                {
+                    products = products.Where(pro => pro.CurrentPrice >= 10000000 && pro.CurrentPrice <= 20000000);
+                }
+                else
+                {
+                    products = products.Where(pro => pro.CurrentPrice >= 20000000);
+                }
+            }
+
+            //Search by brand
+            if (!string.IsNullOrEmpty(sortType))
+            {
+                if (sortType == "ascending")
+                {
+                    products = products.OrderBy(pr => pr.Price);
+                }
+                else if(sortType == "descending")
+                {
+                    products = products.OrderByDescending(pr => pr.Price);
+                }
+            }
+            rs = await products.ToListAsync();
+
+            return (convertToProductDTO(rs, page == 0 ? 1 : page), rs.Count);
+        }
+
+        private List<ProductDTO> convertToProductDTO(List<Product> list, int page)
+        {
+            List<ProductDTO> result = new List<ProductDTO>();
+            if (page != 1 && page * 12 > list.Count)
+                return result;
+            for (int i = (page - 1) * 12; i < page * 12 && i < list.Count(); i++)
+                result.Add(_mapper.Map<ProductDTO>(list[i]));
+            return result;
+        }
+
         //public async Task<string> Modify(IFormFile file)
         //{
         //    string folder = "product/";

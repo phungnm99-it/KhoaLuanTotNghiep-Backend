@@ -60,5 +60,7 @@ namespace WebAPI.RepositoryService.Interface
         public Task<bool> CheckUserBuyProductButNotReview(int userId, int productId);
 
         public Task<List<ReviewDTO>> GetAllReview();
+
+        public Task<(List<ProductDTO>, int count)> SearchProductsByFilter(string brand, string priceFilter, string sortType, int page);
     }
 }
