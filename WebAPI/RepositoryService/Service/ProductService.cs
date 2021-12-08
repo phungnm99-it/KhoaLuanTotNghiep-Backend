@@ -397,18 +397,32 @@ namespace WebAPI.RepositoryService.Service
             List<ProductDTO> list = new List<ProductDTO>();
             if(index == 0)
             {
-                for(int i = 1; i<5; i++)
-                {
-                    list.Add(_mapper.Map<ProductDTO>(products[i]));
-                }
+                list.Add(_mapper.Map<ProductDTO>(products[1]));
+                list.Add(_mapper.Map<ProductDTO>(products[2]));
+                list.Add(_mapper.Map<ProductDTO>(products[3]));
+                list.Add(_mapper.Map<ProductDTO>(products[4]));
+            }
+            else if(index == 1)
+            {
+                list.Add(_mapper.Map<ProductDTO>(products[2]));
+                list.Add(_mapper.Map<ProductDTO>(products[3]));
+                list.Add(_mapper.Map<ProductDTO>(products[4]));
+                list.Add(_mapper.Map<ProductDTO>(products[5]));
             }
             else
             if(index == products.Count - 1)
             {
-                for (int i = index - 1; i > index - 5; i--)
-                {
-                    list.Add(_mapper.Map<ProductDTO>(products[i]));
-                }
+                list.Add(_mapper.Map<ProductDTO>(products[index - 1]));
+                list.Add(_mapper.Map<ProductDTO>(products[index - 2]));
+                list.Add(_mapper.Map<ProductDTO>(products[index - 3]));
+                list.Add(_mapper.Map<ProductDTO>(products[index - 4]));
+            }
+            else if (index == products.Count - 2)
+            {
+                list.Add(_mapper.Map<ProductDTO>(products[index - 1]));
+                list.Add(_mapper.Map<ProductDTO>(products[index - 2]));
+                list.Add(_mapper.Map<ProductDTO>(products[index - 3]));
+                list.Add(_mapper.Map<ProductDTO>(products[index + 1]));
             }
             else
             {
