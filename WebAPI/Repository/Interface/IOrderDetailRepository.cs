@@ -11,5 +11,7 @@ namespace WebAPI.Repository.Interface
         Task<IEnumerable<OrderDetail>> GetOrderDetailByOrderIdAsync(int id);
         void CreateOrderDetail(OrderDetail orderDetail);
         Task<IEnumerable<OrderDetail>> GetOrderDetailByProductId(int productId);
+
+        Task<IEnumerable<OrderDetail>> GetAll();
     }
 }

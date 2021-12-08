@@ -17,6 +17,12 @@ namespace WebAPI.Repository
             Create(orderDetail);
         }
 
+        public async Task<IEnumerable<OrderDetail>> GetAll()
+        {
+            return await FindAll().Include(od => od.Order).Include(od => od.Product).
+                ThenInclude(od => od.Brand).ToListAsync();
+        }
+
         public async Task<IEnumerable<OrderDetail>> GetOrderDetailByOrderIdAsync(int id)
         {
             return await FindByCondition(detail => detail.OrderId == id).Include(detail => detail.Product)

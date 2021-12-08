@@ -279,6 +279,15 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, message = result });
         }
 
+        [AllowAnonymous]
+        [Route("bestSell")]
+        [HttpGet]
+        public async Task<IActionResult> GetBestSellProductsAsync()
+        {
+            var result = await _service.GetBestSellProduct();
+            return new ObjectResult(new { code = 200, data = result });
+        }
+
         [Authorize(Roles =RoleHelper.Admins)]
         [Route("review/getAll")]
         [HttpGet]

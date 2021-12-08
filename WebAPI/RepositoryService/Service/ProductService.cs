@@ -606,6 +606,25 @@ namespace WebAPI.RepositoryService.Service
             return result;
         }
 
+        public async Task<List<ProductDTO>> GetBestSellProduct()
+        {
+            List<ProductDTO> result = new List<ProductDTO>();
+            var pro = await _unitOfWork.OrderDetails.GetAll();
+            pro = pro.Where(od => od.Order.IsCompleted == true).GroupBy(pr => pr.ProductId)
+                .Select(pr => new OrderDetail
+                {
+                    Product = pr.First().Product,
+                    Quantity = pr.Sum(pr => pr.Quantity)
+                }).OrderByDescending(pr => pr.Quantity).ToList();
+            if (pro.Count() > 8)
+                pro = pro.Take(8);
+            foreach(var item in pro)
+            {
+                result.Add(_mapper.Map<ProductDTO>(item.Product));
+            }
+            return result;
+        }
+
         //public async Task<string> Modify(IFormFile file)
         //{
         //    string folder = "product/";
