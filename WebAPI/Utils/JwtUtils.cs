@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth;
+using Google.Apis.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -73,15 +74,23 @@ namespace WebAPI.Utils
             {
                 var settings = new GoogleJsonWebSignature.ValidationSettings()
                 {
+                    Clock = new clock(),
                     Audience = new List<string>() { _goolgeSettings.GetSection("clientId").Value }
                 };
                 var payload = await GoogleJsonWebSignature.ValidateAsync(tokenId, settings);
                 return payload;
             }
-            catch
+            catch(Exception ex)
             {
                 return null;
             }
+        }
+
+        public class clock : IClock
+        {
+            public DateTime Now => DateTime.Now.AddMinutes(5);
+
+            public DateTime UtcNow => DateTime.UtcNow.AddMinutes(5);
         }
     }
 }

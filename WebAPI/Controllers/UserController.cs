@@ -69,17 +69,18 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [Route("loginWithGoogle")]
         [HttpPost]
-        public async Task<IActionResult> LoginWithGoogle([FromBody] JsonElement tokenId)
+        public async Task<IActionResult> LoginWithGoogle([FromForm] string tokenId)
         {
-            string token = JsonSerializer.Serialize(tokenId);
-            var payload = await _jwtUtils.VerifyGoogleToken(token.Substring(1, token.Length - 2));
+            //string token = JsonSerializer.Serialize(tokenId);
+            //var payload = await _jwtUtils.VerifyGoogleToken(token.Substring(1, token.Length - 2));
+            var payload = await _jwtUtils.VerifyGoogleToken(tokenId);
             if (payload == null)
-                return BadRequest("Invalid External Authentication.");
+                return new ObjectResult(new { code = "401" });
 
             var user = await _userService.AuthenticateGoogleAsync(payload);
 
             var generatedToken = _jwtUtils.GenerateToken(user);
-            return Ok(new { code = "200", token = generatedToken });
+            return new ObjectResult(new { code = "200", token = generatedToken });
         }
 
 
