@@ -96,5 +96,17 @@ namespace WebAPI.Controllers
                 return new ObjectResult(new { code = 401, message = "Failed" });
             return new ObjectResult(new { code = 200, message = "Success" });
         }
+
+        [Authorize(Roles = RoleHelper.Shipper)]
+        [Route("deliver/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> DeliverOrderByShipper(int id)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.DeliverOrderByShipper(id, user.Id);
+            if (result == false)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+            return new ObjectResult(new { code = 200, message = "Success" });
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,13 +24,19 @@ namespace WebAPI.RepositoryService.Service
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
-                if (order == null || order.IsCompleted == true || order.Status.Equals("Giao hàng thành công")) 
+                if (order == null || !order.Status.Equals("Đang chờ giao hàng")) 
                     return false;
+
+                var ordes = await _unitOfWork.Orders.FindByCondition(od => od.ShipperId == shipperId && od.IsCompleted != true)
+                    .ToListAsync();
+                if (ordes.Count >= 10)
+                    return false;
+
                 StatusUpdateOrder st = new StatusUpdateOrder()
                 {
                     OrderId = orderId,
                     UpdatedBy = shipperId,
-                    Detail = "Giao hàng thành công",
+                    Detail = "Shipper giao thành công",
                     UpdatedTime = DateTime.Now
                 };
 
@@ -114,6 +121,36 @@ namespace WebAPI.RepositoryService.Service
                     detail.CurrentPrice = product.CurrentPrice;
                     _unitOfWork.OrderDetails.CreateOrderDetail(detail);
                 }
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeliverOrderByShipper(int orderId, int shipperId)
+        {
+            try
+            {
+                var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
+                if (order == null || !order.Status.Equals("Đã xác nhận"))
+                    return false;
+                StatusUpdateOrder st = new StatusUpdateOrder()
+                {
+                    OrderId = orderId,
+                    UpdatedBy = shipperId,
+                    Detail = "Shipper nhận đơn",
+                    UpdatedTime = DateTime.Now
+                };
+
+                order.Status = "Đang chờ giao hàng";
+                order.IsCompleted = true;
+                order.UpdatedTime = DateTime.Now;
+                order.UpdatedBy = shipperId;
+                _unitOfWork.Orders.UpdateOrder(order);
+                _unitOfWork.StatusUpdateOrders.CreateStatusUpdateOrder(st);
                 await _unitOfWork.SaveAsync();
                 return true;
             }
@@ -244,7 +281,7 @@ namespace WebAPI.RepositoryService.Service
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
-                if (order == null || order.IsCompleted == true || order.Status.Equals("Đã xác nhận"))
+                if (order == null || !order.Status.Equals("Đặt hàng thành công"))
                     return false;
                 StatusUpdateOrder st = new StatusUpdateOrder()
                 {

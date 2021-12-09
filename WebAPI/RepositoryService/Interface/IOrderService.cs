@@ -15,5 +15,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<List<OrderDTO>> GetOwnerOrders(int userId);
         Task<bool> VerifyOrderByAdminAsync(int orderId, int adminId);
         Task<bool> CompleteOrderByShipper(int orderId, int shipperId);
+
+        Task<bool> DeliverOrderByShipper(int orderId, int shipperId);
     }
 }
