@@ -11,6 +11,8 @@ namespace WebAPI.ModelDTO
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public int Quantity { get; set; }
+
+        public string ImageUrl { get; set; }
         public decimal Price { get; set; }
         public bool IsSale { get; set; }
         public decimal CurrentPrice { get; set; }
@@ -27,6 +29,7 @@ namespace WebAPI.ModelDTO
                 index.Price = item.Price;
                 index.IsSale = item.IsSale.GetValueOrDefault();
                 index.CurrentPrice = item.CurrentPrice;
+                index.ImageUrl = item.Product.ImageUrl;
                 DetailList.Add(index);
             }
             return DetailList;
