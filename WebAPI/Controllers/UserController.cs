@@ -198,8 +198,10 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model)
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            if (user == null || user.Id != model.Id)
+            if (user == null)
                 return new UnauthorizedObjectResult(new { code = "401", message = "Error" });
+
+            model.Id = user.Id;
             var result = await _userService.UpdateInfo(model);
             if (result == null)
                 return new ObjectResult(new { code = "401", message = "Error" });
