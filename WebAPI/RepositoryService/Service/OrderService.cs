@@ -256,6 +256,24 @@ namespace WebAPI.RepositoryService.Service
                     OrderTime = item.OrderTime,
                     Status = item.Status
                 };
+
+                if(orderDTO.Status.Equals("Đặt hàng thành công"))
+                {
+                    orderDTO.Status = "1";
+                }
+                else if (orderDTO.Status.Equals("Đã xác nhận"))
+                {
+                    orderDTO.Status = "2";
+                }
+                else if (orderDTO.Status.Equals("Đang chờ giao hàng"))
+                {
+                    orderDTO.Status = "3";
+                }
+                else
+                {
+                    orderDTO.Status = "4";
+                }
+
                 orderDTO.Products = new List<OrderDetailDTO>();
                 var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(item.Id);
                 foreach(var detail in orderDetail)
@@ -267,7 +285,8 @@ namespace WebAPI.RepositoryService.Service
                         Quantity = detail.Quantity.GetValueOrDefault(),
                         Price = detail.Price,
                         IsSale = detail.IsSale.GetValueOrDefault(),
-                        CurrentPrice = detail.CurrentPrice
+                        CurrentPrice = detail.CurrentPrice,
+                         ImageUrl = detail.Product.ImageUrl
                     };
                     orderDTO.Products.Add(de);
                 }
