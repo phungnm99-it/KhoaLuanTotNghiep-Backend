@@ -114,7 +114,8 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<IEnumerable<BrandDTO>> GetActiveBrandAsync()
         {
-            var brands = await _unitOfWork.Brands.FindByCondition(brand => brand.Products.Count > 0).ToListAsync();
+            var brands = await _unitOfWork.Brands.FindByCondition(brand => brand.Products.Count > 0
+            && brand.Products.Any(pr => pr.Stock < 1) == false).ToListAsync();
             List<BrandDTO> list = new List<BrandDTO>();
             foreach (var brand in brands)
             {

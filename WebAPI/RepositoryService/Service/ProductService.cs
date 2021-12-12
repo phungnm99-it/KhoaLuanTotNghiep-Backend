@@ -561,7 +561,7 @@ namespace WebAPI.RepositoryService.Service
 
             if (!string.IsNullOrEmpty(priceFilter))
             {
-                if (priceFilter == "Duoi5trieu")
+                if (priceFilter == "duoi5trieu")
                 {
                     products = products.Where(pro => pro.CurrentPrice < 5000000);
                 }
@@ -573,7 +573,7 @@ namespace WebAPI.RepositoryService.Service
                 {
                     products = products.Where(pro => pro.CurrentPrice >= 10000000 && pro.CurrentPrice <= 20000000);
                 }
-                else
+                else if (priceFilter == "tren20trieu")
                 {
                     products = products.Where(pro => pro.CurrentPrice >= 20000000);
                 }
@@ -623,6 +623,60 @@ namespace WebAPI.RepositoryService.Service
                 result.Add(_mapper.Map<ProductDTO>(item.Product));
             }
             return result;
+        }
+
+        public async Task<(List<ProductDTO>, int count)> SearchSaleProductsByFilter(string brand, string priceFilter, string sortType, int page)
+        {
+            var products = _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
+            && product.Stock > 0 && product.IsSale == true);
+            List<ProductDTO> list = new List<ProductDTO>();
+
+            List<Product> rs = new List<Product>();
+            //All
+            if (!string.IsNullOrEmpty(brand))
+            {
+                var currentBrand = await _unitOfWork.Brands.FindByCondition(br => br.Name.ToLower().Contains(brand.ToLower())).FirstOrDefaultAsync();
+                if (currentBrand != null)
+                {
+                    products = products.Where(product => product.BrandId == currentBrand.Id);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(priceFilter))
+            {
+                if (priceFilter == "duoi5trieu")
+                {
+                    products = products.Where(pro => pro.CurrentPrice < 5000000);
+                }
+                else if (priceFilter == "5trieutoi10trieu")
+                {
+                    products = products.Where(pro => pro.CurrentPrice >= 5000000 && pro.CurrentPrice <= 10000000);
+                }
+                else if (priceFilter == "10trieutoi20trieu")
+                {
+                    products = products.Where(pro => pro.CurrentPrice >= 10000000 && pro.CurrentPrice <= 20000000);
+                }
+                else if(priceFilter == "tren20trieu")
+                {
+                    products = products.Where(pro => pro.CurrentPrice >= 20000000);
+                }
+            }
+
+            //Search by brand
+            if (!string.IsNullOrEmpty(sortType))
+            {
+                if (sortType == "ascending")
+                {
+                    products = products.OrderBy(pr => pr.Price);
+                }
+                else if (sortType == "descending")
+                {
+                    products = products.OrderByDescending(pr => pr.Price);
+                }
+            }
+            rs = await products.ToListAsync();
+
+            return (convertToProductDTO(rs, page == 0 ? 1 : page), rs.Count);
         }
 
         //public async Task<string> Modify(IFormFile file)
