@@ -204,17 +204,19 @@ namespace WebAPI.Controllers
             var products = await _service.FindProductsByProductNameAsync(productname);
             return new ObjectResult(new { code = 200, data = products });
         }
-        //[Route("fix")]
-        //[HttpPost]
-        //public async Task<IActionResult> FixProduct([FromForm] IFormFile file)
-        //{
-        //    var product = await _service.Modify(file);
-        //    if (product == null)
-        //    {
-        //        return new ObjectResult(new { code = 401, message = "Error!" });
-        //    }
-        //    return new ObjectResult(new { code = 200, data = product });
-        //}
+
+        [Authorize(Roles = RoleHelper.SuperAdmin)]
+        [Route("fix")]
+        [HttpPost]
+        public async Task<IActionResult> FixProduct([FromForm] IFormFile file)
+        {
+            var product = await _service.Modify(file);
+            if (product == null)
+            {
+                return new ObjectResult(new { code = 401, message = "Error!" });
+            }
+            return new ObjectResult(new { code = 200, data = product });
+        }
 
         [AllowAnonymous]
         [Route("similar/{id}")]

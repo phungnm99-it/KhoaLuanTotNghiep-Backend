@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginShipper([FromForm] LoginModel model)
         {
-            var user = await _userService.AuthenticateAdminAsync(model.Username, model.Password);
+            var user = await _userService.AuthenticateShipperAsync(model.Username, model.Password);
             if (user == null)
             {
                 return new ObjectResult(new { code = "401", message = "Username or password is wrong!" });

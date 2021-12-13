@@ -679,13 +679,13 @@ namespace WebAPI.RepositoryService.Service
             return (convertToProductDTO(rs, page == 0 ? 1 : page), rs.Count);
         }
 
-        //public async Task<string> Modify(IFormFile file)
-        //{
-        //    string folder = "product/";
-        //    string name = "Xiaomi11T5G";
-        //    ImageUploadResult result = await _uploadImage.UploadImage(file, name, folder) as ImageUploadResult;
-        //    return result.Url.ToString();
-        //}
+        public async Task<string> Modify(IFormFile file)
+        {
+            string folder = "commom/";
+            string name = file.FileName.Split('.')[0];
+            ImageUploadResult result = await _uploadImage.UploadImage(file, name, folder) as ImageUploadResult;
+            return result.Url.ToString();
+        }
 
 
     }
