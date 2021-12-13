@@ -117,6 +117,26 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<UserDTO>(user);
         }
 
+        public async Task<UserDTO> AuthenticateShipperAsync(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return null;
+            var user = await _unitOfWork.Users
+                .FindByCondition(user => user.Username == username)
+                .FirstOrDefaultAsync();
+
+            // return null if user not found
+            if (user == null)
+                return null;
+
+            if (user.Password != _hash.GetHashPassword(password))
+                return null;
+            if (user.RoleId != RoleHelper.ShipperRoleId)
+                return null;
+            user = await _unitOfWork.Users.GetUserByIdAsync(user.Id);
+            return _mapper.Map<UserDTO>(user);
+        }
+
         public async Task<UserDTO> AuthenticateAsync(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))

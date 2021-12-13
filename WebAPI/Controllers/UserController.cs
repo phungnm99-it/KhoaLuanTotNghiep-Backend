@@ -55,6 +55,21 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
+        [Route("loginShipper")]
+        [HttpPost]
+        public async Task<IActionResult> LoginShipper([FromForm] LoginModel model)
+        {
+            var user = await _userService.AuthenticateAdminAsync(model.Username, model.Password);
+            if (user == null)
+            {
+                return new ObjectResult(new { code = "401", message = "Username or password is wrong!" });
+            }
+            var token = _jwtUtils.GenerateToken(user);
+
+            return new ObjectResult(new { code = "200", token = token });
+        }
+
+        [AllowAnonymous]
         [Route("register")]
         [HttpPost]
         public async Task<IActionResult> Register([FromForm] RegisterModel model)
