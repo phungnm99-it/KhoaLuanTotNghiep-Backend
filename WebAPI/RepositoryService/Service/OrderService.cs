@@ -223,6 +223,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<IEnumerable<OrderDTO>> GetAllOrdersAsync()
         {
             var orders = await _unitOfWork.Orders.GetAllOrdersAsync();
+            orders = orders.OrderByDescending(od => od.OrderTime);
             List<OrderDTO> orderDTOs = new List<OrderDTO>();
             foreach(var item in orders)
             {
@@ -296,7 +297,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<List<OrderDTO>> GetOrderCanDeliverByShipperAsync(int shipperId)
         {
-            var orders = _unitOfWork.Orders.FindByCondition(order => order.ShipperId == shipperId || order.IsCompleted == false).ToList();
+            var orders = _unitOfWork.Orders.FindByCondition(order => order.ShipperId == shipperId && order.IsCompleted == false).ToList();
             if (orders.Count() == 10)
                 return null;
 
