@@ -365,5 +365,25 @@ namespace WebAPI.RepositoryService.Service
             }
             
         }
+
+        public async Task<CommonShipperInfo> GetCommonShipperInfo(int shipperId)
+        {
+            var user = await _unitOfWork.Users.FindByCondition(user => user.Id == shipperId).FirstOrDefaultAsync();
+            CommonShipperInfo rs = new CommonShipperInfo();
+            rs.WorkingDate = (DateTime.Now - user.CreatedDate).Days;
+
+            var orders = await _unitOfWork.Orders.FindByCondition(od => od.ShipperId == shipperId && od.IsCompleted == true).ToListAsync();
+            rs.DeliveredOrder = orders.Count();
+
+            var orders2 = await _unitOfWork.Orders.FindByCondition(od => od.ShipperId == shipperId && od.IsCompleted == false
+            && od.Status != "Đã huỷ").ToListAsync();
+            rs.DeliveringOrder = orders2.Count();
+
+            var order3 = await _unitOfWork.Orders.FindByCondition(od => od.IsCompleted == false && od.Status != "Đã huỷ"
+            && od.ShipperId != shipperId).ToListAsync();
+            rs.TotalOrder = order3.Count();
+
+            return rs;
+        }
     }
 }

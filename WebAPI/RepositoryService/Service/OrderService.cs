@@ -207,7 +207,6 @@ namespace WebAPI.RepositoryService.Service
 
                 order.ShipperId = shipperId;
                 order.Status = "Đang chờ giao hàng";
-                order.IsCompleted = true;
                 order.UpdatedTime = DateTime.Now;
                 order.UpdatedBy = shipperId;
                 _unitOfWork.Orders.UpdateOrder(order);
@@ -342,7 +341,10 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<List<OrderDTO>> GetOrderDeliveredByShipperAsync(int shipperId)
         {
-            var orderlist = _unitOfWork.Orders.FindByCondition(order => order.ShipperId == shipperId).ToList();
+            var orderlist = _unitOfWork.Orders.FindByCondition(order => order.ShipperId == shipperId && order.IsCompleted == true)
+                .Include(od => od.StatusUpdateOrders)
+                .OrderByDescending(or => or.StatusUpdateOrders.FirstOrDefault(st => st.OrderId == or.Id
+                    && st.Detail == "Shipper giao thành công").UpdatedTime).ToList();
 
             List<OrderDTO> orderDTOs = new List<OrderDTO>();
             foreach (var item in orderlist)
@@ -357,6 +359,7 @@ namespace WebAPI.RepositoryService.Service
                     Name = item.Name,
                     TotalCost = item.TotalCost,
                     OrderTime = item.OrderTime,
+                    DeliverTime = item.StatusUpdateOrders.Where(st => st.Detail == "Shipper giao thành công").FirstOrDefault().UpdatedTime,
                     Status = "4"
                 };
 

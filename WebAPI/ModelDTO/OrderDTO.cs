@@ -17,6 +17,7 @@ namespace WebAPI.ModelDTO
         public decimal TotalCost { get; set; }
         public string PaymentMethod { get; set; }
         public DateTime OrderTime { get; set; }
+        public DateTime? DeliverTime { get; set; }
 
         public List<OrderDetailDTO> Products { get; set; }
     }

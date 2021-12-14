@@ -30,5 +30,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<List<ReviewDTO>> GetAllOwnReviews(int userId);
 
         Task<UserDTO> UpdateInfo(UpdateUserModel model);
+
+        Task<CommonShipperInfo> GetCommonShipperInfo(int shipperId);
     }
 }
