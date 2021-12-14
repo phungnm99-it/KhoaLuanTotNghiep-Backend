@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
             {
                 orderModel.PaymentMethod = "Thanh toán trực tiếp";
             }
-            var result = await _orderService.CreateOrder(orderModel);
+            var result = await _orderService.CreateOrderAsync(orderModel);
             if (result == false)
                 return new ObjectResult(new { code = 401, message = "Failed" });
             return new ObjectResult(new { code = 200, data = result });
@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAllOrdersOfCurrentUser()
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            var result = await _orderService.GetOwnerOrders(user.Id);
+            var result = await _orderService.GetOwnerOrdersAsync(user.Id);
             return new ObjectResult(new { code = 200, data = result });
         }
 
@@ -91,7 +91,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CompleteOrderByShipper(int id)
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            var result = await _orderService.CompleteOrderByShipper(id, user.Id);
+            var result = await _orderService.CompleteOrderByShipperAsync(id, user.Id);
             if (result == false)
                 return new ObjectResult(new { code = 401, message = "Failed" });
             return new ObjectResult(new { code = 200, message = "Success" });
@@ -103,10 +103,64 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> DeliverOrderByShipper(int id)
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            var result = await _orderService.DeliverOrderByShipper(id, user.Id);
+            var result = await _orderService.DeliverOrderByShipperAsync(id, user.Id);
             if (result == false)
                 return new ObjectResult(new { code = 401, message = "Failed" });
             return new ObjectResult(new { code = 200, message = "Success" });
+        }
+
+        [Authorize(Roles = RoleHelper.Shipper)]
+        [Route("shipperCancel/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> CancelOrderByShipper(int id)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.CancelOrderByShipperAsync(id, user.Id);
+            if (result == false)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+            return new ObjectResult(new { code = 200, message = "Success" });
+        }
+
+        [Authorize(Roles = RoleHelper.User)]
+        [Route("userCancel/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> CancelOrderByUser(int id)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.CancelOrderByUserAsync(id, user.Id);
+            if (result == false)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+            return new ObjectResult(new { code = 200, message = "Success" });
+        }
+
+        [Authorize(Roles = RoleHelper.Shipper)]
+        [Route("delivering")]
+        [HttpGet]
+        public async Task<IActionResult> GetOrderDeliveringByShipper()
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.GetOrderDeliveringByShipperAsync(user.Id);
+            return new ObjectResult(new { code = 200, data = result });
+        }
+
+        [Authorize(Roles = RoleHelper.Shipper)]
+        [Route("delivered")]
+        [HttpGet]
+        public async Task<IActionResult> GetOrderDeliveredByShipper()
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.GetOrderDeliveredByShipperAsync(user.Id);
+            return new ObjectResult(new { code = 200, data = result });
+        }
+
+        [Authorize(Roles = RoleHelper.Shipper)]
+        [Route("canDeliver")]
+        [HttpGet]
+        public async Task<IActionResult> GetOrderCanDeliverByShipper()
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.GetOrderCanDeliverByShipperAsync(user.Id);
+            return new ObjectResult(new { code = 200, data = result });
         }
     }
 }

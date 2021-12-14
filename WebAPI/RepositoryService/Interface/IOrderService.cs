@@ -11,11 +11,18 @@ namespace WebAPI.RepositoryService.Interface
     {
         Task<OrderDTO> GetOrderByIdAsync(int id, int userId, string role);
         Task<IEnumerable<OrderDTO>> GetAllOrdersAsync();
-        Task<bool> CreateOrder(OrderModel order);
-        Task<List<OrderDTO>> GetOwnerOrders(int userId);
+        Task<bool> CreateOrderAsync(OrderModel order);
+        Task<List<OrderDTO>> GetOwnerOrdersAsync(int userId);
         Task<bool> VerifyOrderByAdminAsync(int orderId, int adminId);
-        Task<bool> CompleteOrderByShipper(int orderId, int shipperId);
+        Task<bool> CompleteOrderByShipperAsync(int orderId, int shipperId);
 
-        Task<bool> DeliverOrderByShipper(int orderId, int shipperId);
+        Task<bool> DeliverOrderByShipperAsync(int orderId, int shipperId);
+
+        Task<List<OrderDTO>> GetOrderCanDeliverByShipperAsync(int shipperId);
+        Task<List<OrderDTO>> GetOrderDeliveringByShipperAsync(int shipperId);
+        Task<List<OrderDTO>> GetOrderDeliveredByShipperAsync(int shipperId);
+        Task<bool> CancelOrderByUserAsync(int orderId, int userId);
+
+        Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId);
     }
 }

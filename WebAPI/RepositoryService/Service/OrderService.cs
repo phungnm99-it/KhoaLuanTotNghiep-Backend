@@ -19,7 +19,67 @@ namespace WebAPI.RepositoryService.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CompleteOrderByShipper(int orderId, int shipperId)
+        public async Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId)
+        {
+            try
+            {
+                var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
+                if (order == null || !order.Status.Equals("Đang chờ giao hàng"))
+                    return false;
+
+                order.Status = "Đã huỷ";
+
+                StatusUpdateOrder st = new StatusUpdateOrder()
+                {
+                    OrderId = orderId,
+                    UpdatedBy = shipperId,
+                    Detail = "Shipper huỷ đơn hàng",
+                    UpdatedTime = DateTime.Now
+                };
+                order.UpdatedTime = DateTime.Now;
+                order.UpdatedBy = shipperId;
+                _unitOfWork.Orders.UpdateOrder(order);
+                _unitOfWork.StatusUpdateOrders.CreateStatusUpdateOrder(st);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> CancelOrderByUserAsync(int orderId, int userId)
+        {
+            try
+            {
+                var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
+                if (order == null || (!order.Status.Equals("Đặt hàng thành công") && !order.Status.Equals("Đã xác nhận")))
+                    return false;
+
+                order.Status = "Đã huỷ";
+
+                StatusUpdateOrder st = new StatusUpdateOrder()
+                {
+                    OrderId = orderId,
+                    UpdatedBy = userId,
+                    Detail = "User huỷ đơn hàng",
+                    UpdatedTime = DateTime.Now
+                };
+                order.UpdatedTime = DateTime.Now;
+                order.UpdatedBy = userId;
+                _unitOfWork.Orders.UpdateOrder(order);
+                _unitOfWork.StatusUpdateOrders.CreateStatusUpdateOrder(st);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> CompleteOrderByShipperAsync(int orderId, int shipperId)
         {
             try
             {
@@ -55,7 +115,7 @@ namespace WebAPI.RepositoryService.Service
             }
         }
 
-        public async Task<bool> CreateOrder(OrderModel order)
+        public async Task<bool> CreateOrderAsync(OrderModel order)
         {
             foreach(var item in order.ProductList)
             {
@@ -130,7 +190,7 @@ namespace WebAPI.RepositoryService.Service
             }
         }
 
-        public async Task<bool> DeliverOrderByShipper(int orderId, int shipperId)
+        public async Task<bool> DeliverOrderByShipperAsync(int orderId, int shipperId)
         {
             try
             {
@@ -145,6 +205,7 @@ namespace WebAPI.RepositoryService.Service
                     UpdatedTime = DateTime.Now
                 };
 
+                order.ShipperId = shipperId;
                 order.Status = "Đang chờ giao hàng";
                 order.IsCompleted = true;
                 order.UpdatedTime = DateTime.Now;
@@ -234,7 +295,135 @@ namespace WebAPI.RepositoryService.Service
             return orderDTO;
         }
 
-        public async Task<List<OrderDTO>> GetOwnerOrders(int userId)
+        public async Task<List<OrderDTO>> GetOrderCanDeliverByShipperAsync(int shipperId)
+        {
+            var orders = _unitOfWork.Orders.FindByCondition(order => order.ShipperId == shipperId || order.IsCompleted == false).ToList();
+            if (orders.Count() == 10)
+                return null;
+
+            var orderlist = _unitOfWork.Orders.FindByCondition(order => order.Status == "Đã xác nhận").ToList();
+
+            List<OrderDTO> orderDTOs = new List<OrderDTO>();
+            foreach (var item in orderlist)
+            {
+                OrderDTO orderDTO = new OrderDTO()
+                {
+                    Id = item.Id,
+                    Address = item.Address,
+                    OrderCode = item.OrderCode,
+                    PaymentMethod = item.PaymentMethod,
+                    PhoneNumber = item.PhoneNumber,
+                    Name = item.Name,
+                    TotalCost = item.TotalCost,
+                    OrderTime = item.OrderTime,
+                    Status = "2"
+                };
+
+                orderDTO.Products = new List<OrderDetailDTO>();
+                var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(item.Id);
+                foreach (var detail in orderDetail)
+                {
+                    OrderDetailDTO de = new OrderDetailDTO()
+                    {
+                        ProductId = detail.ProductId.GetValueOrDefault(),
+                        ProductName = detail.Product.Name,
+                        Quantity = detail.Quantity.GetValueOrDefault(),
+                        Price = detail.Price,
+                        IsSale = detail.IsSale.GetValueOrDefault(),
+                        CurrentPrice = detail.CurrentPrice,
+                        ImageUrl = detail.Product.ImageUrl
+                    };
+                    orderDTO.Products.Add(de);
+                }
+                orderDTOs.Add(orderDTO);
+            }
+            return orderDTOs;
+        }
+
+        public async Task<List<OrderDTO>> GetOrderDeliveredByShipperAsync(int shipperId)
+        {
+            var orderlist = _unitOfWork.Orders.FindByCondition(order => order.ShipperId == shipperId).ToList();
+
+            List<OrderDTO> orderDTOs = new List<OrderDTO>();
+            foreach (var item in orderlist)
+            {
+                OrderDTO orderDTO = new OrderDTO()
+                {
+                    Id = item.Id,
+                    Address = item.Address,
+                    OrderCode = item.OrderCode,
+                    PaymentMethod = item.PaymentMethod,
+                    PhoneNumber = item.PhoneNumber,
+                    Name = item.Name,
+                    TotalCost = item.TotalCost,
+                    OrderTime = item.OrderTime,
+                    Status = "4"
+                };
+
+                orderDTO.Products = new List<OrderDetailDTO>();
+                var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(item.Id);
+                foreach (var detail in orderDetail)
+                {
+                    OrderDetailDTO de = new OrderDetailDTO()
+                    {
+                        ProductId = detail.ProductId.GetValueOrDefault(),
+                        ProductName = detail.Product.Name,
+                        Quantity = detail.Quantity.GetValueOrDefault(),
+                        Price = detail.Price,
+                        IsSale = detail.IsSale.GetValueOrDefault(),
+                        CurrentPrice = detail.CurrentPrice,
+                        ImageUrl = detail.Product.ImageUrl
+                    };
+                    orderDTO.Products.Add(de);
+                }
+                orderDTOs.Add(orderDTO);
+            }
+            return orderDTOs;
+        }
+
+        public async Task<List<OrderDTO>> GetOrderDeliveringByShipperAsync(int shipperId)
+        {
+            var orderlist = _unitOfWork.Orders.FindByCondition(order => order.Status == "Đang chờ giao hàng"
+            && order.ShipperId == shipperId).ToList();
+
+            List<OrderDTO> orderDTOs = new List<OrderDTO>();
+            foreach (var item in orderlist)
+            {
+                OrderDTO orderDTO = new OrderDTO()
+                {
+                    Id = item.Id,
+                    Address = item.Address,
+                    OrderCode = item.OrderCode,
+                    PaymentMethod = item.PaymentMethod,
+                    PhoneNumber = item.PhoneNumber,
+                    Name = item.Name,
+                    TotalCost = item.TotalCost,
+                    OrderTime = item.OrderTime,
+                    Status = "3"
+                };
+
+                orderDTO.Products = new List<OrderDetailDTO>();
+                var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(item.Id);
+                foreach (var detail in orderDetail)
+                {
+                    OrderDetailDTO de = new OrderDetailDTO()
+                    {
+                        ProductId = detail.ProductId.GetValueOrDefault(),
+                        ProductName = detail.Product.Name,
+                        Quantity = detail.Quantity.GetValueOrDefault(),
+                        Price = detail.Price,
+                        IsSale = detail.IsSale.GetValueOrDefault(),
+                        CurrentPrice = detail.CurrentPrice,
+                        ImageUrl = detail.Product.ImageUrl
+                    };
+                    orderDTO.Products.Add(de);
+                }
+                orderDTOs.Add(orderDTO);
+            }
+            return orderDTOs;
+        }
+
+        public async Task<List<OrderDTO>> GetOwnerOrdersAsync(int userId)
         {
             var orders = _unitOfWork.Orders.FindByCondition(order => order.UserId == userId)
                 .OrderByDescending(order => order.OrderTime).ToList();
@@ -269,9 +458,13 @@ namespace WebAPI.RepositoryService.Service
                 {
                     orderDTO.Status = "3";
                 }
-                else
+                else if (orderDTO.Status.Equals("Giao hàng thành công"))
                 {
                     orderDTO.Status = "4";
+                }
+                else
+                {
+                    orderDTO.Status = "0";
                 }
 
                 orderDTO.Products = new List<OrderDetailDTO>();
