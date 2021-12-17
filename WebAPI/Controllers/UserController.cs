@@ -238,5 +238,19 @@ namespace WebAPI.Controllers
             var rs = await _userService.GetCommonShipperInfo(user.Id);
             return new ObjectResult(new { code = 200, data = rs });
         }
+
+        [Authorize(Roles = RoleHelper.Admins)]
+        [Route("getCommonAdminInfo")]
+        [HttpGet]
+        public async Task<IActionResult> GetCommonAdminInfo()
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            if (user == null)
+            {
+                return new ObjectResult(new { code = 401, message = "Fail" });
+            }
+            var rs = await _userService.GetCommonAdminInfo();
+            return new ObjectResult(new { code = 200, data = rs });
+        }
     }
 }

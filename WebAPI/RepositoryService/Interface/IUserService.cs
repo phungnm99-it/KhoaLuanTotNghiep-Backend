@@ -32,5 +32,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<UserDTO> UpdateInfo(UpdateUserModel model);
 
         Task<CommonShipperInfo> GetCommonShipperInfo(int shipperId);
+
+        Task<CommonAdminInfo> GetCommonAdminInfo();
     }
 }

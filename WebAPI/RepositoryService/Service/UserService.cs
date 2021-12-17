@@ -385,5 +385,15 @@ namespace WebAPI.RepositoryService.Service
 
             return rs;
         }
+
+        public async Task<CommonAdminInfo> GetCommonAdminInfo()
+        {
+            CommonAdminInfo rs = new CommonAdminInfo();
+            rs.TotalAccount = _unitOfWork.Users.FindByCondition(us => us.RoleId == RoleHelper.UserRoleId).Count();
+            rs.TotalProduct = _unitOfWork.Products.FindByCondition(pr => pr.IsDeleted == false).Count();
+            rs.TotalOrder = _unitOfWork.Orders.FindByCondition(od => od.IsCompleted == true).Count();
+            rs.TotalFeedback = _unitOfWork.Feedbacks.FindAll().Count();
+            return rs;
+        }
     }
 }
