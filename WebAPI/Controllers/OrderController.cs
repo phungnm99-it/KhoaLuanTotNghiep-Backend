@@ -35,10 +35,26 @@ namespace WebAPI.Controllers
                 return new ObjectResult(new { code = 401, message = "Failed" });
 
             orderModel.UserId = user.Id;
-            if(orderModel.PaymentMethod == null)
-            {
-                orderModel.PaymentMethod = "Thanh toán trực tiếp";
-            }
+            orderModel.PaymentMethod = "Thanh toán trực tiếp";
+            var result = await _orderService.CreateOrderAsync(orderModel);
+            if (result == false)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+            return new ObjectResult(new { code = 200, data = result });
+        }
+
+        [Route("createPaypal")]
+        [HttpPost]
+        public async Task<IActionResult> CreateOrderPaypal([FromBody] OrderModel orderModel)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            if (user == null)
+                return new UnauthorizedObjectResult(new { code = 401, message = false });
+
+            if (orderModel.ProductList?.Any() != true)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+
+            orderModel.UserId = user.Id;
+            orderModel.PaymentMethod = "Paypal";
             var result = await _orderService.CreateOrderAsync(orderModel);
             if (result == false)
                 return new ObjectResult(new { code = 401, message = "Failed" });

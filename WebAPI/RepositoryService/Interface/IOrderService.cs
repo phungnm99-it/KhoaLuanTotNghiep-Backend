@@ -12,6 +12,8 @@ namespace WebAPI.RepositoryService.Interface
         Task<OrderDTO> GetOrderByIdAsync(int id, int userId, string role);
         Task<IEnumerable<OrderDTO>> GetAllOrdersAsync();
         Task<bool> CreateOrderAsync(OrderModel order);
+
+        Task<bool> CreateOrderWithPaypalAsync(OrderModel order);
         Task<List<OrderDTO>> GetOwnerOrdersAsync(int userId);
         Task<bool> VerifyOrderByAdminAsync(int orderId, int adminId);
         Task<bool> CompleteOrderByShipperAsync(int orderId, int shipperId);

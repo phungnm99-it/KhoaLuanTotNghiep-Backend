@@ -190,6 +190,81 @@ namespace WebAPI.RepositoryService.Service
             }
         }
 
+        public async Task<bool> CreateOrderWithPaypalAsync(OrderModel order)
+        {
+            foreach (var item in order.ProductList)
+            {
+                var product = await _unitOfWork.Products.GetProductByIdAsync(item.Id);
+                if (product.Stock < item.Quantity)
+                {
+                    return false;
+                }
+            }
+
+            DateTime datetime = new DateTime();
+            try
+            {
+                Order model = new Order();
+                model.OrderCode = "DH" + DateTime.Now.Day.ToString()
+                    + DateTime.Now.Hour.ToString()
+                    + DateTime.Now.Minute.ToString() + order.UserId.ToString();
+                model.UserId = order.UserId;
+                model.Address = order.Address;
+                model.PhoneNumber = order.PhoneNumber;
+                model.Name = order.Name;
+                model.Status = "Đặt hàng thành công";
+                model.IsCompleted = false;
+                model.PaymentMethod = order.PaymentMethod;
+                model.OrderTime = DateTime.Now;
+                datetime = model.OrderTime;
+                model.UpdatedTime = DateTime.Now;
+                model.UpdatedBy = order.UserId;
+                model.TotalCost = 0;
+                foreach (var item in order.ProductList)
+                {
+                    var product = await _unitOfWork.Products.GetProductByIdAsync(item.Id);
+                    model.TotalCost += product.CurrentPrice * item.Quantity;
+                }
+                _unitOfWork.Orders.CreateOrder(model);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return false;
+            }
+
+            try
+            {
+                var orderFind = _unitOfWork.Orders.FindByCondition(ord => ord.OrderTime == datetime &&
+                ord.UserId == order.UserId).FirstOrDefault();
+                foreach (var item in order.ProductList)
+                {
+                    var product = await _unitOfWork.Products.GetProductByIdAsync(item.Id);
+                    OrderDetail detail = new OrderDetail();
+                    detail.OrderId = orderFind.Id;
+                    detail.ProductId = product.Id;
+                    detail.Quantity = item.Quantity;
+                    product.Stock -= item.Quantity;
+                    if (product.Stock == 0)
+                    {
+                        product.Status = "Hết hàng";
+                    }
+                    _unitOfWork.Products.UpdateProduct(product);
+
+                    detail.Price = product.Price;
+                    detail.IsSale = product.IsSale;
+                    detail.CurrentPrice = product.CurrentPrice;
+                    _unitOfWork.OrderDetails.CreateOrderDetail(detail);
+                }
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> DeliverOrderByShipperAsync(int orderId, int shipperId)
         {
             try
