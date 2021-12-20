@@ -90,27 +90,27 @@ namespace WebAPI.RepositoryService.Service
             return true;
         }
 
-        public async Task<bool> DeleteBrandAsync(int brandId)
-        {
-            var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandId);
-            if (brand == null || brand.IsDeleted == true)
-                return false;
-            brand.IsDeleted = true;
-            _unitOfWork.Brands.DeleteBrand(brand);
-            await _unitOfWork.SaveAsync();
-            return true;
-        }
+        //public async Task<bool> DeleteBrandAsync(int brandId)
+        //{
+        //    var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandId);
+        //    if (brand == null || brand.IsDeleted == true)
+        //        return false;
+        //    brand.IsDeleted = true;
+        //    _unitOfWork.Brands.DeleteBrand(brand);
+        //    await _unitOfWork.SaveAsync();
+        //    return true;
+        //}
 
-        public async Task<bool> RestoreBrandAsync(int brandId)
-        {
-            var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandId);
-            if (brand == null || brand.IsDeleted == false)
-                return false;
-            brand.IsDeleted = false;
-            _unitOfWork.Brands.DeleteBrand(brand);
-            await _unitOfWork.SaveAsync();
-            return true;
-        }
+        //public async Task<bool> RestoreBrandAsync(int brandId)
+        //{
+        //    var brand = await _unitOfWork.Brands.GetBrandByIdAsync(brandId);
+        //    if (brand == null || brand.IsDeleted == false)
+        //        return false;
+        //    brand.IsDeleted = false;
+        //    _unitOfWork.Brands.DeleteBrand(brand);
+        //    await _unitOfWork.SaveAsync();
+        //    return true;
+        //}
 
         public async Task<IEnumerable<BrandDTO>> GetActiveBrandAsync()
         {

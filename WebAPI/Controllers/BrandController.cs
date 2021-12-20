@@ -62,25 +62,25 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, data = brand });
         }
 
-        [Route("delete")]
-        [HttpPatch]
-        public async Task<IActionResult> DeleteBrand([FromForm] int id)
-        {
-            var result = await _brandService.DeleteBrandAsync(id);
-            if (result == false)
-                return new ObjectResult(new { code = 401, message = "Delete failed!" });
-            return new ObjectResult(new { code = 200, message = "Delete success!" });
-        }
+        //[Route("delete")]
+        //[HttpPatch]
+        //public async Task<IActionResult> DeleteBrand([FromForm] int id)
+        //{
+        //    var result = await _brandService.DeleteBrandAsync(id);
+        //    if (result == false)
+        //        return new ObjectResult(new { code = 401, message = "Delete failed!" });
+        //    return new ObjectResult(new { code = 200, message = "Delete success!" });
+        //}
 
-        [Route("restore")]
-        [HttpPatch]
-        public async Task<IActionResult> RestoreBrand([FromForm] int id)
-        {
-            var result = await _brandService.RestoreBrandAsync(id);
-            if (result == false)
-                return new ObjectResult(new { code = 401, message = "Restore failed!" });
-            return new ObjectResult(new { code = 200, message = "Restore success!" });
-        }
+        //[Route("restore")]
+        //[HttpPatch]
+        //public async Task<IActionResult> RestoreBrand([FromForm] int id)
+        //{
+        //    var result = await _brandService.RestoreBrandAsync(id);
+        //    if (result == false)
+        //        return new ObjectResult(new { code = 401, message = "Restore failed!" });
+        //    return new ObjectResult(new { code = 200, message = "Restore success!" });
+        //}
 
         [Route("search")]
         [HttpPost]

@@ -17,8 +17,8 @@ namespace WebAPI.RepositoryService.Interface
 
         public Task<BrandDTO> UpdateBrandAsync(BrandUpdateModel brandModel);
 
-        public Task<bool> DeleteBrandAsync(int brandId);
-        public Task<bool> RestoreBrandAsync(int brandId);
+        //public Task<bool> DeleteBrandAsync(int brandId);
+        //public Task<bool> RestoreBrandAsync(int brandId);
 
         public Task<IEnumerable<BrandDTO>> GetActiveBrandAsync();
 

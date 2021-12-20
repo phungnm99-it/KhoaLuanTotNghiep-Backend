@@ -13,6 +13,6 @@ namespace WebAPI.Repository.Interface
         Task<Brand> GetBrandWithDetailsAsync(int brandId);
         void CreateBrand(Brand brand);
         void UpdateBrand(Brand brand);
-        void DeleteBrand(Brand brand);
+        //void DeleteBrand(Brand brand);
     }
 }

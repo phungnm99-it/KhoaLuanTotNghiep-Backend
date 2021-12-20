@@ -16,10 +16,10 @@ namespace WebAPI.Repository
             Create(brand);
         }
 
-        public void DeleteBrand(Brand brand)
-        {
-            Delete(brand);
-        }
+        //public void DeleteBrand(Brand brand)
+        //{
+        //    Delete(brand);
+        //}
 
         public async Task<IEnumerable<Brand>> GetAllBrandsAsync()
         {
