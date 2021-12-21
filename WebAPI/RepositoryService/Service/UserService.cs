@@ -37,7 +37,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> AddAdminAccountAsync(RegisterModel model)
         {
-            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
+            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username || user.PhoneNumber == model.PhoneNumber)
                 .FirstOrDefaultAsync();
             if (checkEmailExist != null)
                 return null;
@@ -68,7 +68,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<UserDTO> AddShipperAccountAsync(RegisterModel model)
         {
-            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username)
+            var checkEmailExist = await _unitOfWork.Users.FindByCondition(user => user.Email == model.Email || user.Username == model.Username || user.PhoneNumber == model.PhoneNumber)
                 .FirstOrDefaultAsync();
             if (checkEmailExist != null)
                 return null;
