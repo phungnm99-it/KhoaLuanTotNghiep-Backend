@@ -36,6 +36,15 @@ namespace WebAPI.RepositoryService.Service
                     Detail = "Shipper huỷ đơn hàng",
                     UpdatedTime = DateTime.Now
                 };
+
+                var pros = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(order.Id);
+                foreach (var item in pros)
+                {
+                    var pro = await _unitOfWork.Products.GetProductByIdAsync(item.ProductId.Value);
+                    pro.Stock += item.Quantity;
+                    _unitOfWork.Products.UpdateProduct(pro);
+                }
+
                 order.UpdatedTime = DateTime.Now;
                 order.UpdatedBy = shipperId;
                 _unitOfWork.Orders.UpdateOrder(order);
@@ -67,6 +76,15 @@ namespace WebAPI.RepositoryService.Service
                     UpdatedTime = DateTime.Now
                 };
                 order.UpdatedTime = DateTime.Now;
+
+                var pros = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(order.Id);
+                foreach(var item in pros)
+                {
+                    var pro = await _unitOfWork.Products.GetProductByIdAsync(item.ProductId.Value);
+                    pro.Stock += item.Quantity;
+                    _unitOfWork.Products.UpdateProduct(pro);
+                }
+
                 order.UpdatedBy = userId;
                 _unitOfWork.Orders.UpdateOrder(order);
                 _unitOfWork.StatusUpdateOrders.CreateStatusUpdateOrder(st);
