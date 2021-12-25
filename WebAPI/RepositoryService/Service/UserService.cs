@@ -152,6 +152,9 @@ namespace WebAPI.RepositoryService.Service
             if (user.Password != _hash.GetHashPassword(password))
                 return null;
 
+            if (user.IsDeleted == true || user.IsDisable == true)
+                return null;
+
             user = await _unitOfWork.Users.GetUserByIdAsync(user.Id);
             return _mapper.Map<UserDTO>(user);
         }
@@ -210,7 +213,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<bool> ForgetPasswordAsync(string email)
         {
             var user = await _unitOfWork.Users.FindByCondition(user => user.Email == email).FirstOrDefaultAsync();
-            if (user == null || user.IsDeleted == true || user.IsDisable == null)
+            if (user == null || user.IsDeleted == true || user.IsDisable == true)
                 return false;
 
             string hashId = _hash.GetHashResetPassword(user.Id);
@@ -394,6 +397,126 @@ namespace WebAPI.RepositoryService.Service
             rs.TotalOrder = _unitOfWork.Orders.FindByCondition(od => od.IsCompleted == true).Count();
             rs.TotalFeedback = _unitOfWork.Feedbacks.FindAll().Count();
             return rs;
+        }
+
+        public async Task<bool> LockUserAsync(int userId)
+        {
+            var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
+            if (user == null)
+                return false;
+            if (user.IsDeleted == true)
+                return false;
+
+            if (user.IsDisable == true)
+                return false;
+
+            if (user.RoleId != RoleHelper.UserRoleId)
+                return false;
+
+            user.IsDisable = true;
+            _unitOfWork.Users.UpdateUser(user);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> UnlockUserAsync(int userId)
+        {
+            var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
+            if (user == null)
+                return false;
+            if (user.IsDeleted == true)
+                return false;
+
+            if (user.IsDisable == false)
+                return false;
+
+            if (user.RoleId != RoleHelper.UserRoleId)
+                return false;
+
+            user.IsDisable = false;
+            _unitOfWork.Users.UpdateUser(user);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> LockShipperAsync(int userId)
+        {
+            var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
+            if (user == null)
+                return false;
+            if (user.IsDeleted == true)
+                return false;
+
+            if (user.IsDisable == true)
+                return false;
+
+            if (user.RoleId != RoleHelper.ShipperRoleId)
+                return false;
+
+            user.IsDisable = true;
+            _unitOfWork.Users.UpdateUser(user);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> UnlockShipperAsync(int userId)
+        {
+            var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
+            if (user == null)
+                return false;
+            if (user.IsDeleted == true)
+                return false;
+
+            if (user.IsDisable == false)
+                return false;
+
+            if (user.RoleId != RoleHelper.ShipperRoleId)
+                return false;
+
+            user.IsDisable = false;
+            _unitOfWork.Users.UpdateUser(user);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> LockAdminAsync(int userId)
+        {
+            var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
+            if (user == null)
+                return false;
+            if (user.IsDeleted == true)
+                return false;
+
+            if (user.IsDisable == true)
+                return false;
+
+            if (user.RoleId != RoleHelper.AdminRoleId)
+                return false;
+
+            user.IsDisable = true;
+            _unitOfWork.Users.UpdateUser(user);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> UnlockAdminAsync(int userId)
+        {
+            var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
+            if (user == null)
+                return false;
+            if (user.IsDeleted == true)
+                return false;
+
+            if (user.IsDisable == false)
+                return false;
+
+            if (user.RoleId != RoleHelper.AdminRoleId)
+                return false;
+
+            user.IsDisable = false;
+            _unitOfWork.Users.UpdateUser(user);
+            await _unitOfWork.SaveAsync();
+            return true;
         }
     }
 }

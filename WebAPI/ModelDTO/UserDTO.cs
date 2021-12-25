@@ -19,5 +19,6 @@ namespace WebAPI.ModelDTO
         public string ImageUrl { get; set; }
         public bool IsGoogleLogin { get; set; }
         public string RoleName { get; set; }
+        public bool IsDisable { get; set; }
     }
 }

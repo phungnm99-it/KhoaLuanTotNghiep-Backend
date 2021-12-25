@@ -91,12 +91,14 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<ProductDTO> UpdateProductAsync(ProductUpdateModel productModel)
         {
-            if (await IsProductNameExist(productModel.Name)) return null;
             var product = await _unitOfWork.Products.GetProductByIdAsync(productModel.Id);
             if (product == null || product.IsDeleted == true) return null;
 
             if (!string.IsNullOrEmpty(productModel.Battery))
                 product.Battery = productModel.Battery;
+
+            if (!string.IsNullOrEmpty(productModel.Name))
+                product.Name = productModel.Name;
 
             if (!string.IsNullOrEmpty(productModel.BrandName))
             {
@@ -439,7 +441,7 @@ namespace WebAPI.RepositoryService.Service
         public async Task<IEnumerable<ProductDTO>> GetActiveProductsAsync(SortModel sortModel)
         {
             var products = _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
-            && product.Stock > 0);
+            && product.Stock > 0 && product.Status == "Đang kinh doanh");
             List<ProductDTO> list = new List<ProductDTO>();
             if(!string.IsNullOrEmpty(sortModel.BrandName))
             {
