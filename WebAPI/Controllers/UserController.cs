@@ -108,6 +108,24 @@ namespace WebAPI.Controllers
             return new OkObjectResult(new { code = "200", data = list });
         }
 
+        [Authorize(Roles = RoleHelper.SuperAdmin)]
+        [Route("getAllAdmin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllAdminAsync()
+        {
+            var list = await _userService.GetAllAdminAsync();
+            return new OkObjectResult(new { code = "200", data = list });
+        }
+
+        [Authorize(Roles = RoleHelper.SuperAdmin)]
+        [Route("getAllShipper")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllShipperAsync()
+        {
+            var list = await _userService.GetAllShipperAsync();
+            return new OkObjectResult(new { code = "200", data = list });
+        }
+
         [Authorize(Roles = RoleHelper.User)]
         [Route("getReview")]
         [HttpGet]

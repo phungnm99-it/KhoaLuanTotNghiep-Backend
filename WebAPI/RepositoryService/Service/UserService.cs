@@ -251,7 +251,32 @@ namespace WebAPI.RepositoryService.Service
             var users = await _unitOfWork.Users.GetAllUsersAsync();
             foreach(var user in users)
             {
-                list.Add(_mapper.Map<UserDTO>(user));
+                if (user.RoleId == RoleHelper.UserRoleId && user.IsDeleted == false)
+                    list.Add(_mapper.Map<UserDTO>(user));
+            }
+            return list;
+        }
+
+        public async Task<IEnumerable<UserDTO>> GetAllAdminAsync()
+        {
+            List<UserDTO> list = new List<UserDTO>();
+            var users = await _unitOfWork.Users.GetAllUsersAsync();
+            foreach (var user in users)
+            {
+                if(user.RoleId == RoleHelper.AdminRoleId && user.IsDeleted == false)
+                    list.Add(_mapper.Map<UserDTO>(user));
+            }
+            return list;
+        }
+
+        public async Task<IEnumerable<UserDTO>> GetAllShipperAsync()
+        {
+            List<UserDTO> list = new List<UserDTO>();
+            var users = await _unitOfWork.Users.GetAllUsersAsync();
+            foreach (var user in users)
+            {
+                if (user.RoleId == RoleHelper.ShipperRoleId && user.IsDeleted == false)
+                    list.Add(_mapper.Map<UserDTO>(user));
             }
             return list;
         }
@@ -517,6 +542,30 @@ namespace WebAPI.RepositoryService.Service
             _unitOfWork.Users.UpdateUser(user);
             await _unitOfWork.SaveAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<UserDTO>> GetAllLockedAccountAsync()
+        {
+            List<UserDTO> list = new List<UserDTO>();
+            var users = await _unitOfWork.Users.GetAllUsersAsync();
+            foreach (var user in users)
+            {
+                if (user.IsDisable == true && user.IsDeleted == false)
+                    list.Add(_mapper.Map<UserDTO>(user));
+            }
+            return list;
+        }
+
+        public async Task<IEnumerable<UserDTO>> GetLockedUserAccountAsync()
+        {
+            List<UserDTO> list = new List<UserDTO>();
+            var users = await _unitOfWork.Users.GetAllUsersAsync();
+            foreach (var user in users)
+            {
+                if (user.IsDisable == true && user.IsDeleted == false && user.RoleId == RoleHelper.UserRoleId)
+                    list.Add(_mapper.Map<UserDTO>(user));
+            }
+            return list;
         }
     }
 }

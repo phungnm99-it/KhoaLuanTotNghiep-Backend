@@ -15,6 +15,10 @@ namespace WebAPI.RepositoryService.Interface
         Task<UserDTO> AuthenticateGoogleAsync(Payload payload);
         Task<UserDTO> RegisterAsync(RegisterModel model);
         Task<IEnumerable<UserDTO>> GetAllUserAsync();
+        Task<IEnumerable<UserDTO>> GetAllAdminAsync();
+        Task<IEnumerable<UserDTO>> GetAllShipperAsync();
+        Task<IEnumerable<UserDTO>> GetAllLockedAccountAsync();
+        Task<IEnumerable<UserDTO>> GetLockedUserAccountAsync();
         Task<UserDTO> GetByIdAsync(int id);
         Task<UserDTO> AddAdminAccountAsync(RegisterModel model);
         Task<UserDTO> AddShipperAccountAsync(RegisterModel model);
