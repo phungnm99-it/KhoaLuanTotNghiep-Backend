@@ -298,55 +298,25 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = RoleHelper.SuperAdmin)]
-        [Route("lockAdmin/{userId}")]
+        [Route("getLockedAccount")]
         [HttpGet]
-        public async Task<IActionResult> LockAdminAsync(int userId)
+        public async Task<IActionResult> GetLockedAccountAsync()
         {
-            var rs = await _userService.LockAdminAsync(userId);
-            if (rs == false)
+            var user = HttpContext.Items["User"] as UserDTO;
+            if(user == null)
             {
-                return new ObjectResult(new { code = 401, message = "Fail" });
+                return new ObjectResult(new { code = 401 });
             }
-            return new ObjectResult(new { code = 200, message = "Success" });
-        }
-
-        [Authorize(Roles = RoleHelper.SuperAdmin)]
-        [Route("unlockAdmin/{userId}")]
-        [HttpGet]
-        public async Task<IActionResult> UnlockAdminAsync(int userId)
-        {
-            var rs = await _userService.UnlockAdminAsync(userId);
-            if (rs == false)
+            if(user.RoleName == RoleHelper.Admin)
             {
-                return new ObjectResult(new { code = 401, message = "Fail" });
+                var rs = await _userService.GetLockedUserAccountAsync();
+                return new ObjectResult(new { code = 200, data = rs });
             }
-            return new ObjectResult(new { code = 200, message = "Success" });
-        }
-
-        [Authorize(Roles = RoleHelper.SuperAdmin)]
-        [Route("lockShipper/{userId}")]
-        [HttpGet]
-        public async Task<IActionResult> LockShipperAsync(int userId)
-        {
-            var rs = await _userService.LockShipperAsync(userId);
-            if (rs == false)
+            else
             {
-                return new ObjectResult(new { code = 401, message = "Fail" });
+                var rs = await _userService.GetAllLockedAccountAsync();
+                return new ObjectResult(new { code = 200, data = rs });
             }
-            return new ObjectResult(new { code = 200, message = "Success" });
-        }
-
-        [Authorize(Roles = RoleHelper.SuperAdmin)]
-        [Route("unlockShipper/{userId}")]
-        [HttpGet]
-        public async Task<IActionResult> UnlockShipperAsync(int userId)
-        {
-            var rs = await _userService.UnlockShipperAsync(userId);
-            if (rs == false)
-            {
-                return new ObjectResult(new { code = 401, message = "Fail" });
-            }
-            return new ObjectResult(new { code = 200, message = "Success" });
         }
     }
 }

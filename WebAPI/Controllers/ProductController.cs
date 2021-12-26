@@ -35,9 +35,18 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         [Route("")]
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllSellProducts()
         {
             var products = await _service.GetAllSellingProductsAsync();
+            return new ObjectResult(new { code = 200, data = products });
+        }
+
+        [AllowAnonymous]
+        [Route("all")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var products = await _service.GetAllProductsAsync();
             return new ObjectResult(new { code = 200, data = products });
         }
 

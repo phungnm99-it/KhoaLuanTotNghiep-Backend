@@ -57,6 +57,7 @@ namespace WebAPI.DataModel
         public string Name { get; set; }
         public int Stock { get; set; }
         public string Status { get; set; }
+        public bool IsFeatured { get; set; }
     }
 
     public class ProductPriceManager

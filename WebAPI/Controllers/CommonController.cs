@@ -11,9 +11,16 @@ namespace WebAPI.Controllers
     [ApiController]
     public class CommonController : Controller
     {
-        [Route("currencyRate")]
+        [Route("caculateTotal")]
         [HttpGet]
-        public async Task<IActionResult> GetRate()
+        public async Task<IActionResult> GetCaculateTotalAsync()
+        {
+            return new OkObjectResult(new { code = "200", rate = 23000 });
+        }
+
+        [Route("caculateOrder")]
+        [HttpGet]
+        public async Task<IActionResult> GetCaculateOrderAsync()
         {
             return new OkObjectResult(new { code = "200", rate = 23000 });
         }

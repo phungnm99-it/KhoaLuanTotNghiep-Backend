@@ -208,8 +208,18 @@ namespace WebAPI.RepositoryService.Service
             if (!string.IsNullOrEmpty(productStock.Status))
                 product.Status = productStock.Status;
 
+            if(productStock.Status == "Ngừng kinh doanh")
+            {
+                product.IsFeatured = false;
+            }
+
             if (productStock.Stock >= 0)
                 product.Stock = productStock.Stock;
+
+            if(productStock.IsFeatured == true)
+            {
+                product.IsFeatured = true;
+            }
 
             _unitOfWork.Products.UpdateProduct(product);
             await _unitOfWork.SaveAsync();
@@ -393,8 +403,22 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<IEnumerable<ProductDTO>> GetSimilarProductsAsync(int id)
         {
-            var products = await _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
+            var find = await _unitOfWork.Products.FindByCondition(pr => pr.Id == id).FirstOrDefaultAsync();
+            if(find == null)
+            {
+                var lis = await _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
             && product.Stock > 0).Include(index => index.Brand).OrderBy(product => product.Price).ToListAsync();
+                List<ProductDTO> liss = new List<ProductDTO>();
+                liss.Add(_mapper.Map<ProductDTO>(lis[0]));
+                liss.Add(_mapper.Map<ProductDTO>(lis[1]));
+                liss.Add(_mapper.Map<ProductDTO>(lis[2]));
+                liss.Add(_mapper.Map<ProductDTO>(lis[3]));
+                return liss;
+            }
+
+
+            var products = await _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
+            ).Include(index => index.Brand).OrderBy(product => product.Price).ToListAsync();
             int index = products.FindIndex(product => product.Id == id);
             List<ProductDTO> list = new List<ProductDTO>();
             if(index == 0)

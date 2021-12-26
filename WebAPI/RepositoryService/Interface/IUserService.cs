@@ -42,9 +42,5 @@ namespace WebAPI.RepositoryService.Interface
         Task<bool> LockUserAsync(int userId);
 
         Task<bool> UnlockUserAsync(int userId);
-        Task<bool> LockShipperAsync(int userId);
-        Task<bool> UnlockShipperAsync(int userId);
-        Task<bool> LockAdminAsync(int userId);
-        Task<bool> UnlockAdminAsync(int userId);
     }
 }
