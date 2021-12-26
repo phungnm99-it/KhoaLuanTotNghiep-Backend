@@ -125,7 +125,7 @@ namespace WebAPI.RepositoryService.Service
             return list;
         }
 
-        public async Task<List<BrandDTO>> SearchBrand(string name)
+        public async Task<List<BrandDTO>> SearchBrandAsync(string name)
         {
             var listBrands = await _unitOfWork.Brands.FindByCondition(index => index.IsDeleted == false
             && index.Name.ToLower().Contains(name.ToLower())).ToListAsync();

@@ -90,7 +90,7 @@ namespace WebAPI.RepositoryService.Service
             return _mapper.Map<FeedbackDTO>(feedback);
         }
 
-        public async Task<List<FeedbackDTO>> GetFeedbackHasReply()
+        public async Task<List<FeedbackDTO>> GetFeedbackHasReplyAsync()
         {
             List<FeedbackDTO> list = new List<FeedbackDTO>();
             var fb = await _unitOfWork.Feedbacks.FindByCondition(f => f.IsReplied == true).ToListAsync();
@@ -101,7 +101,7 @@ namespace WebAPI.RepositoryService.Service
             return list;
         }
 
-        public async Task<List<FeedbackDTO>> GetFeedbackNoReply()
+        public async Task<List<FeedbackDTO>> GetFeedbackNoReplyAsync()
         {
             List<FeedbackDTO> list = new List<FeedbackDTO>();
             var fb = await _unitOfWork.Feedbacks.FindByCondition(f => f.IsReplied == false).ToListAsync();

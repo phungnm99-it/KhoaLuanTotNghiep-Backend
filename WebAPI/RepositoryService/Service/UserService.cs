@@ -227,7 +227,7 @@ namespace WebAPI.RepositoryService.Service
             return true;
         }
 
-        public async Task<List<ReviewDTO>> GetAllOwnReviews(int userId)
+        public async Task<List<ReviewDTO>> GetAllOwnReviewsAsync(int userId)
         {
             try
             {
@@ -311,7 +311,7 @@ namespace WebAPI.RepositoryService.Service
             return flag;
         }
 
-        public async Task<UserDTO> UpdateInfo(UpdateUserModel model)
+        public async Task<UserDTO> UpdateInfoAsync(UpdateUserModel model)
         {
             try
             {
@@ -369,7 +369,7 @@ namespace WebAPI.RepositoryService.Service
             
         }
 
-        public async Task<CommonShipperInfo> GetCommonShipperInfo(int shipperId)
+        public async Task<CommonShipperInfo> GetCommonShipperInfoAsync(int shipperId)
         {
             var user = await _unitOfWork.Users.FindByCondition(user => user.Id == shipperId).FirstOrDefaultAsync();
             CommonShipperInfo rs = new CommonShipperInfo();
@@ -389,7 +389,7 @@ namespace WebAPI.RepositoryService.Service
             return rs;
         }
 
-        public async Task<CommonAdminInfo> GetCommonAdminInfo()
+        public async Task<CommonAdminInfo> GetCommonAdminInfoAsync()
         {
             CommonAdminInfo rs = new CommonAdminInfo();
             rs.TotalAccount = _unitOfWork.Users.FindByCondition(us => us.RoleId == RoleHelper.UserRoleId).Count();

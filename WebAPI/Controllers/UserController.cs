@@ -114,7 +114,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAllReview()
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            var list = await _userService.GetAllOwnReviews(user.Id);
+            var list = await _userService.GetAllOwnReviewsAsync(user.Id);
             return new OkObjectResult(new { code = "200", data = list });
         }
 
@@ -217,7 +217,7 @@ namespace WebAPI.Controllers
                 return new UnauthorizedObjectResult(new { code = "401", message = "Error" });
 
             model.Id = user.Id;
-            var result = await _userService.UpdateInfo(model);
+            var result = await _userService.UpdateInfoAsync(model);
             if (result == null)
                 return new ObjectResult(new { code = "401", message = "Error" });
 
@@ -235,7 +235,7 @@ namespace WebAPI.Controllers
             {
                 return new ObjectResult(new { code = 401, message = "Fail" });
             }
-            var rs = await _userService.GetCommonShipperInfo(user.Id);
+            var rs = await _userService.GetCommonShipperInfoAsync(user.Id);
             return new ObjectResult(new { code = 200, data = rs });
         }
 
@@ -249,7 +249,7 @@ namespace WebAPI.Controllers
             {
                 return new ObjectResult(new { code = 401, message = "Fail" });
             }
-            var rs = await _userService.GetCommonAdminInfo();
+            var rs = await _userService.GetCommonAdminInfoAsync();
             return new ObjectResult(new { code = 200, data = rs });
         }
 

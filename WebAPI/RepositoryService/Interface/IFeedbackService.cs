@@ -14,7 +14,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<FeedbackDTO> CreateFeedbackAsync(FeedbackModel feedback);
         Task<FeedbackDTO> ReplyFeedbackAsync(ReplyFeedbackModel model, int adminId);
 
-        Task<List<FeedbackDTO>> GetFeedbackHasReply();
-        Task<List<FeedbackDTO>> GetFeedbackNoReply();
+        Task<List<FeedbackDTO>> GetFeedbackHasReplyAsync();
+        Task<List<FeedbackDTO>> GetFeedbackNoReplyAsync();
     }
 }

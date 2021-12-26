@@ -27,13 +27,13 @@ namespace WebAPI.RepositoryService.Interface
 
         Task<UserDTO> AuthenticateShipperAsync(string username, string password);
 
-        Task<List<ReviewDTO>> GetAllOwnReviews(int userId);
+        Task<List<ReviewDTO>> GetAllOwnReviewsAsync(int userId);
 
-        Task<UserDTO> UpdateInfo(UpdateUserModel model);
+        Task<UserDTO> UpdateInfoAsync(UpdateUserModel model);
 
-        Task<CommonShipperInfo> GetCommonShipperInfo(int shipperId);
+        Task<CommonShipperInfo> GetCommonShipperInfoAsync(int shipperId);
 
-        Task<CommonAdminInfo> GetCommonAdminInfo();
+        Task<CommonAdminInfo> GetCommonAdminInfoAsync();
 
         Task<bool> LockUserAsync(int userId);
 

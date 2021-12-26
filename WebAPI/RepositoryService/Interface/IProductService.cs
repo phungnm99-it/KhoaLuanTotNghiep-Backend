@@ -54,17 +54,17 @@ namespace WebAPI.RepositoryService.Interface
 
         public Task<IEnumerable<ReviewDTO>> GetAllReviewsByProductIdAsync(int productId);
 
-        public Task<bool> CreateReview(ReviewModel model);
-        public Task<bool> CheckUserIdIfBuyProductId(int userId, int productId);
+        public Task<bool> CreateReviewAsync(ReviewModel model);
+        public Task<bool> CheckUserIdIfBuyProductIdAsync(int userId, int productId);
 
-        public Task<bool> CheckUserBuyProductButNotReview(int userId, int productId);
+        public Task<bool> CheckUserBuyProductButNotReviewAsync(int userId, int productId);
 
-        public Task<List<ReviewDTO>> GetAllReview();
+        public Task<List<ReviewDTO>> GetAllReviewAsync();
 
-        public Task<(List<ProductDTO>, int count)> SearchProductsByFilter(string brand, string priceFilter, string sortType, int page);
+        public Task<(List<ProductDTO>, int count)> SearchProductsByFilterAsync(string brand, string priceFilter, string sortType, int page);
 
-        public Task<(List<ProductDTO>, int count)> SearchSaleProductsByFilter(string brand, string priceFilter, string sortType, int page);
+        public Task<(List<ProductDTO>, int count)> SearchSaleProductsByFilterAsync(string brand, string priceFilter, string sortType, int page);
 
-        public Task<List<ProductDTO>> GetBestSellProduct();
+        public Task<List<ProductDTO>> GetBestSellProductAsync();
     }
 }

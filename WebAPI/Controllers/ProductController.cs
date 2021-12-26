@@ -241,7 +241,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CheckIfUserBuyProductAsync(int productId)
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            var result = await _service.CheckUserIdIfBuyProductId(user.Id, productId);
+            var result = await _service.CheckUserIdIfBuyProductIdAsync(user.Id, productId);
             return new ObjectResult(new { code = 200, data = result });
         }
 
@@ -251,7 +251,7 @@ namespace WebAPI.Controllers
         {
             var user = HttpContext.Items["User"] as UserDTO;
             model.UserId = user.Id;
-            var result = await _service.CreateReview(model);
+            var result = await _service.CreateReviewAsync(model);
             if (!result)
             {
                 return new ObjectResult(new { code = 401, message = "Fail" });
@@ -264,7 +264,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CheckIfUserBuyButNotReviewAsync(int productId)
         {
             var user = HttpContext.Items["User"] as UserDTO;
-            var result = await _service.CheckUserBuyProductButNotReview(user.Id, productId);
+            var result = await _service.CheckUserBuyProductButNotReviewAsync(user.Id, productId);
             if (!result)
             {
                 return new ObjectResult(new { code = 401, message = "Fail" });
@@ -286,7 +286,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBestSellProductsAsync()
         {
-            var result = await _service.GetBestSellProduct();
+            var result = await _service.GetBestSellProductAsync();
             return new ObjectResult(new { code = 200, data = result });
         }
 
@@ -295,7 +295,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllReviews()
         {
-            var result = await _service.GetAllReview();
+            var result = await _service.GetAllReviewAsync();
             return new ObjectResult(new { code = 200, data = result });
         }
 
@@ -304,7 +304,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Find(string brand, string priceFilter, string sortType, int page)
         {
-            var result = await _service.SearchProductsByFilter(brand, priceFilter, sortType, page);
+            var result = await _service.SearchProductsByFilterAsync(brand, priceFilter, sortType, page);
             return new ObjectResult(new { code = 200, data = result.Item1, count = result.count });
         }
 
@@ -313,7 +313,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> FindSale(string brand, string priceFilter, string sortType, int page)
         {
-            var result = await _service.SearchSaleProductsByFilter(brand, priceFilter, sortType, page);
+            var result = await _service.SearchSaleProductsByFilterAsync(brand, priceFilter, sortType, page);
             return new ObjectResult(new { code = 200, data = result.Item1, count = result.count });
         }
     }

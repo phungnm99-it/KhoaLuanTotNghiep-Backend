@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchBrand(string name)
         {
-            var result = await _brandService.SearchBrand(name);
+            var result = await _brandService.SearchBrandAsync(name);
             return new ObjectResult(new { code = 200, data = result });
         }
     }

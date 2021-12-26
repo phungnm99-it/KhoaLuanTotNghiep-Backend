@@ -485,7 +485,7 @@ namespace WebAPI.RepositoryService.Service
             return rev;
         }
 
-        public async Task<bool> CheckUserIdIfBuyProductId(int userId, int productId)
+        public async Task<bool> CheckUserIdIfBuyProductIdAsync(int userId, int productId)
         {
             var orderByProductId = await _unitOfWork.OrderDetails.GetOrderDetailByProductId(productId);
             var check = orderByProductId.Where(or => or.Order.UserId == userId && or.Order.IsCompleted == true);
@@ -494,11 +494,11 @@ namespace WebAPI.RepositoryService.Service
             return true;
         }
 
-        public async Task<bool> CreateReview(ReviewModel model)
+        public async Task<bool> CreateReviewAsync(ReviewModel model)
         {
             try
             {
-                var check = await CheckUserIdIfBuyProductId(model.UserId, model.ProductId);
+                var check = await CheckUserIdIfBuyProductIdAsync(model.UserId, model.ProductId);
                 if (check == false)
                     return false;
                 var r = await _unitOfWork.Reviews.GetAllOwnReviewsAsync(model.UserId);
@@ -522,9 +522,9 @@ namespace WebAPI.RepositoryService.Service
             }
         }
 
-        public async Task<bool> CheckUserBuyProductButNotReview(int userId, int productId)
+        public async Task<bool> CheckUserBuyProductButNotReviewAsync(int userId, int productId)
         {
-            var checkbuy = await CheckUserIdIfBuyProductId(userId, productId);
+            var checkbuy = await CheckUserIdIfBuyProductIdAsync(userId, productId);
             if (checkbuy == false)
                 return false;
             var checkReview = await _unitOfWork.Reviews.GetReviewByUserIdAndProductIdAsync(userId, productId);
@@ -533,7 +533,7 @@ namespace WebAPI.RepositoryService.Service
             return true;
         }
 
-        public async Task<List<ReviewDTO>> GetAllReview()
+        public async Task<List<ReviewDTO>> GetAllReviewAsync()
         {
             var list = await _unitOfWork.Reviews.GetAllReviews();
             List<ReviewDTO> rvs = new List<ReviewDTO>();
@@ -544,7 +544,7 @@ namespace WebAPI.RepositoryService.Service
             return rvs;
         }
 
-        public async Task<(List<ProductDTO>, int count)> SearchProductsByFilter(string brand, string priceFilter, string sortType, int page)
+        public async Task<(List<ProductDTO>, int count)> SearchProductsByFilterAsync(string brand, string priceFilter, string sortType, int page)
         {
             var products = _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
             && product.Stock > 0);
@@ -608,7 +608,7 @@ namespace WebAPI.RepositoryService.Service
             return result;
         }
 
-        public async Task<List<ProductDTO>> GetBestSellProduct()
+        public async Task<List<ProductDTO>> GetBestSellProductAsync()
         {
             List<ProductDTO> result = new List<ProductDTO>();
             var pro = await _unitOfWork.OrderDetails.GetAll();
@@ -627,7 +627,7 @@ namespace WebAPI.RepositoryService.Service
             return result;
         }
 
-        public async Task<(List<ProductDTO>, int count)> SearchSaleProductsByFilter(string brand, string priceFilter, string sortType, int page)
+        public async Task<(List<ProductDTO>, int count)> SearchSaleProductsByFilterAsync(string brand, string priceFilter, string sortType, int page)
         {
             var products = _unitOfWork.Products.FindByCondition(product => product.IsDeleted == false
             && product.Stock > 0 && product.IsSale == true);

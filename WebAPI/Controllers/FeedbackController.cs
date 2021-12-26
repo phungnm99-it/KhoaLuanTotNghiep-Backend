@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFeedbackHasReply()
         {
-            var list = await _feedbackService.GetFeedbackHasReply();
+            var list = await _feedbackService.GetFeedbackHasReplyAsync();
             return new OkObjectResult(new { code = "200", data = list });
         }
 
@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFeedbackNoReply()
         {
-            var list = await _feedbackService.GetFeedbackNoReply();
+            var list = await _feedbackService.GetFeedbackNoReplyAsync();
             return new OkObjectResult(new { code = "200", data = list });
         }
 
