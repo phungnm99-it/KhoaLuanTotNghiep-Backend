@@ -71,7 +71,7 @@ namespace WebAPI.RepositoryService.Service
         {
             var products = await _unitOfWork.Products
                 .FindByCondition(index => index.IsDeleted == false
-                && (!index.Status.Equals("Ngừng kinh doanh")))
+                && (index.Status.Equals("Đang kinh doanh")))
                 .Include(index=>index.Brand)
                 .ToListAsync();
             List<ProductDTO> list = new List<ProductDTO>();
@@ -216,7 +216,7 @@ namespace WebAPI.RepositoryService.Service
             if (productStock.Stock >= 0)
                 product.Stock = productStock.Stock;
 
-            if(productStock.IsFeatured == true)
+            if(product.Price > 0 && product.CurrentPrice >0 && productStock.IsFeatured == true)
             {
                 product.IsFeatured = true;
             }

@@ -138,7 +138,7 @@ namespace WebAPI.RepositoryService.Service
             foreach(var item in order.ProductList)
             {
                 var product = await _unitOfWork.Products.GetProductByIdAsync(item.Id);
-                if(product.Stock < item.Quantity)
+                if(product.Stock < item.Quantity || product.CurrentPrice == 0 || product.Price == 0)
                 {
                     return false;
                 }
@@ -213,7 +213,7 @@ namespace WebAPI.RepositoryService.Service
             foreach (var item in order.ProductList)
             {
                 var product = await _unitOfWork.Products.GetProductByIdAsync(item.Id);
-                if (product.Stock < item.Quantity)
+                if (product.Stock < item.Quantity || product.CurrentPrice == 0 || product.Price == 0)
                 {
                     return false;
                 }
