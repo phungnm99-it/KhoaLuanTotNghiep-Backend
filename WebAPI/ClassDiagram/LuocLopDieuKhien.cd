@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebAPI.Controllers.BrandController">
+    <Position X="8.25" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAEAAAAAAAAAAAAAAAIAAAgAAAAgAAAAAQAQA=</HashCode>
+      <FileName>Controllers\BrandController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPI.Controllers.CommonController">
+    <Position X="8.25" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Controllers\CommonController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPI.Controllers.FeedbackController">
+    <Position X="8.25" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQABAAAAAAAAQAAAACAAAAAAAAAAEAAAgAAAAAAAIA=</HashCode>
+      <FileName>Controllers\FeedbackController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPI.Controllers.OrderController">
+    <Position X="2.75" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>MAQAAAAEAABQgAAAAIAAQAAAAAAEAIQAACQAAAAAAAA=</HashCode>
+      <FileName>Controllers\OrderController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPI.Controllers.ProductController">
+    <Position X="5.25" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>YBAAQgAkAgAoAAAQoAACABiAAIJJAAAABEAAAEABhQA=</HashCode>
+      <FileName>Controllers\ProductController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPI.Controllers.SubscriberController">
+    <Position X="2.75" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAIAABAkAAAAAAAAA=</HashCode>
+      <FileName>Controllers\SubscriberController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPI.Controllers.UserController">
+    <Position X="0.5" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAIAACEQAAQAgAAAIAAAAAkAGAABCAIIUkFUAAABAIA=</HashCode>
+      <FileName>Controllers\UserController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

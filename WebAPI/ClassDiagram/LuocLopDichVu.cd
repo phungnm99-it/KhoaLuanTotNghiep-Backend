@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebAPI.RepositoryService.Service.BrandService" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAgAAgABABAQAAEAAAAACACAAAABAAA=</HashCode>
+      <FileName>RepositoryService\Service\BrandService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.RepositoryService.Service.FeedbackService" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAACAQAQAAAgABAAgAAAAAAABAAAAAAQAAAAA=</HashCode>
+      <FileName>RepositoryService\Service\FeedbackService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.RepositoryService.Service.OrderService" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAEAAGAAAAAkAAAAAAAAAQAIQAAAAAgiCAAAE=</HashCode>
+      <FileName>RepositoryService\Service\OrderService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.RepositoryService.Service.ProductService" BaseTypeListCollapsed="true">
+    <Position X="3" Y="1.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>CIIcIAFAIAAABBgAAgkZBAAAAUCBAAAAgAEAABDBBCA=</HashCode>
+      <FileName>RepositoryService\Service\ProductService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.RepositoryService.Service.SubscriberService" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAIAAAgEBAAQAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>RepositoryService\Service\SubscriberService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.RepositoryService.Service.UserService" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAQQCAEBCAAQAAAIiARAAAAAIEAAARgAMBABQBBIAI=</HashCode>
+      <FileName>RepositoryService\Service\UserService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.179" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
