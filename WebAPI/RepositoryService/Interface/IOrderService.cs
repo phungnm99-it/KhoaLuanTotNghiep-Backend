@@ -26,5 +26,8 @@ namespace WebAPI.RepositoryService.Interface
         Task<bool> CancelOrderByUserAsync(int orderId, int userId);
 
         Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId);
+
+        Task<int[]> CaculateOrderAsync();
+        Task<decimal[]> CaculateTotalAsync();
     }
 }

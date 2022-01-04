@@ -417,10 +417,10 @@ namespace WebAPI.RepositoryService.Service
         public async Task<CommonAdminInfo> GetCommonAdminInfoAsync()
         {
             CommonAdminInfo rs = new CommonAdminInfo();
-            rs.TotalAccount = _unitOfWork.Users.FindByCondition(us => us.RoleId == RoleHelper.UserRoleId).Count();
+            rs.TotalAccount = _unitOfWork.Users.FindAll().Count();
             rs.TotalProduct = _unitOfWork.Products.FindByCondition(pr => pr.IsDeleted == false).Count();
-            rs.TotalOrder = _unitOfWork.Orders.FindByCondition(od => od.IsCompleted == true).Count();
-            rs.TotalFeedback = _unitOfWork.Feedbacks.FindAll().Count();
+            rs.TotalOrder = _unitOfWork.Orders.FindByCondition(od => od.Status != "Đã huỷ").Count();
+            rs.TotalBrand = _unitOfWork.Brands.FindAll().Count();
             return rs;
         }
 
@@ -435,7 +435,7 @@ namespace WebAPI.RepositoryService.Service
             if (user.IsDisable == true)
                 return false;
 
-            if (user.RoleId != RoleHelper.UserRoleId)
+            if (user.RoleId == RoleHelper.SuperAdminRoleId)
                 return false;
 
             user.IsDisable = true;
@@ -455,8 +455,6 @@ namespace WebAPI.RepositoryService.Service
             if (user.IsDisable == false)
                 return false;
 
-            if (user.RoleId != RoleHelper.UserRoleId)
-                return false;
 
             user.IsDisable = false;
             _unitOfWork.Users.UpdateUser(user);

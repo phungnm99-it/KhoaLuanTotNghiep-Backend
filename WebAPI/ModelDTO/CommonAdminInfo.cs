@@ -10,6 +10,6 @@ namespace WebAPI.ModelDTO
         public int TotalAccount { get; set; }
         public int TotalProduct { get; set; }
         public int TotalOrder { get; set; }
-        public int TotalFeedback { get; set; }
+        public int TotalBrand { get; set; }
     }
 }

@@ -19,12 +19,37 @@ namespace WebAPI.RepositoryService.Service
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<int[]> CaculateOrderAsync()
+        {
+            var a = _unitOfWork.Orders.FindByCondition(order => order.Status == "Đặt hàng thành công").Count();
+            var b = _unitOfWork.Orders.FindByCondition(order => order.Status == "Đã xác nhận").Count();
+            var c = _unitOfWork.Orders.FindByCondition(order => order.Status == "Đang giao hàng").Count();
+            var d = _unitOfWork.Orders.FindByCondition(order => order.Status == "Giao hàng thành công").Count();
+
+            return new int[] { a, b, c, d };
+        }
+
+        public async Task<decimal[]> CaculateTotalAsync()
+        {
+            var orders = _unitOfWork.Orders.FindByCondition(od => od.IsCompleted == true);
+            int monthNow = DateTime.Now.Month;
+            int yearNow = DateTime.Now.Year;
+            if(monthNow == 1)
+            {
+                return new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 1).Sum(od => od.TotalCost)
+                };
+            }
+            return new decimal[] { };
+        }
+
         public async Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId)
         {
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
-                if (order == null || !order.Status.Equals("Đang chờ giao hàng"))
+                if (order == null || !order.Status.Equals("Đang giao hàng"))
                     return false;
 
                 order.Status = "Đã huỷ";
@@ -102,7 +127,7 @@ namespace WebAPI.RepositoryService.Service
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
-                if (order == null || !order.Status.Equals("Đang chờ giao hàng")) 
+                if (order == null || !order.Status.Equals("Đang giao hàng")) 
                     return false;
 
                 var ordes = await _unitOfWork.Orders.FindByCondition(od => od.ShipperId == shipperId && od.IsCompleted != true)
@@ -299,7 +324,7 @@ namespace WebAPI.RepositoryService.Service
                 };
 
                 order.ShipperId = shipperId;
-                order.Status = "Đang chờ giao hàng";
+                order.Status = "Đang giao hàng";
                 order.UpdatedTime = DateTime.Now;
                 order.UpdatedBy = shipperId;
                 _unitOfWork.Orders.UpdateOrder(order);
@@ -480,7 +505,7 @@ namespace WebAPI.RepositoryService.Service
 
         public async Task<List<OrderDTO>> GetOrderDeliveringByShipperAsync(int shipperId)
         {
-            var orderlist = _unitOfWork.Orders.FindByCondition(order => order.Status == "Đang chờ giao hàng"
+            var orderlist = _unitOfWork.Orders.FindByCondition(order => order.Status == "Đang giao hàng"
             && order.ShipperId == shipperId).ToList();
 
             List<OrderDTO> orderDTOs = new List<OrderDTO>();
@@ -551,7 +576,7 @@ namespace WebAPI.RepositoryService.Service
                 {
                     orderDTO.Status = "2";
                 }
-                else if (orderDTO.Status.Equals("Đang chờ giao hàng"))
+                else if (orderDTO.Status.Equals("Đang giao hàng"))
                 {
                     orderDTO.Status = "3";
                 }
