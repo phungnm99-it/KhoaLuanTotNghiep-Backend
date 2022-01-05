@@ -22,12 +22,13 @@ namespace WebAPI.Controllers
             _orderService = orderService;
         }
 
-        [Authorize(Roles =RoleHelper.Admin)]
+        //[Authorize(Roles =RoleHelper.Admin)]
         [Route("caculateTotal")]
         [HttpGet]
         public async Task<IActionResult> GetCaculateTotalAsync()
         {
-            return new OkObjectResult(new { code = "200", data = _orderService.CaculateOrderAsync() });
+            var data = await _orderService.CaculateTotalAsync();
+            return new OkObjectResult(new { code = "200", data = data });
         }
 
         //[Authorize(Roles =RoleHelper.Admin)]
@@ -35,7 +36,8 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCaculateOrderAsync()
         {
-            return new OkObjectResult(new { code = "200", data = _orderService.CaculateOrderAsync().Result });
+            var data = await _orderService.CaculateOrderAsync();
+            return new OkObjectResult(new { code = "200", data = data });
         }
     }
 }

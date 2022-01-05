@@ -28,6 +28,6 @@ namespace WebAPI.RepositoryService.Interface
         Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId);
 
         Task<int[]> CaculateOrderAsync();
-        Task<decimal[]> CaculateTotalAsync();
+        Task<TotalDTO> CaculateTotalAsync();
     }
 }

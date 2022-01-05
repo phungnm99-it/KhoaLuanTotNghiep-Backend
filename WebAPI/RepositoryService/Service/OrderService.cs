@@ -29,19 +29,267 @@ namespace WebAPI.RepositoryService.Service
             return new int[] { a, b, c, d };
         }
 
-        public async Task<decimal[]> CaculateTotalAsync()
+        public async Task<TotalDTO> CaculateTotalAsync()
         {
             var orders = _unitOfWork.Orders.FindByCondition(od => od.IsCompleted == true);
             int monthNow = DateTime.Now.Month;
             int yearNow = DateTime.Now.Year;
             if(monthNow == 1)
             {
-                return new decimal[]
+                yearNow -= 1;
+                return new TotalDTO (new string[] { "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12" },
+                    new decimal[]
                 {
-                    orders.Where(od => od.UpdatedTime.Month == 1).Sum(od => od.TotalCost)
-                };
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                });
             }
-            return new decimal[] { };
+            if(monthNow == 2)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6"
+                    , "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12", "Tháng 1" },
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                });
+            }
+
+            if (monthNow == 3)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6"
+                    , "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12", "Tháng 1", "Tháng 2"},
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            if (monthNow == 4)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 4", "Tháng 5", "Tháng 6"
+                    , "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12", "Tháng 1", "Tháng 2", "Tháng 3"},
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                });
+            }
+
+            if (monthNow == 5)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 5", "Tháng 6"
+                    , "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4"},
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            if (monthNow == 6)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 6"
+                    , "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5"},
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            if (monthNow == 7)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
+                    "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5","Tháng 6" },
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            if (monthNow == 8)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
+                    "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5","Tháng 6", "Tháng 7" },
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            if (monthNow == 9)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
+                    "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5","Tháng 6", "Tháng 7", "Tháng 8" },
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            if (monthNow == 10)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 10", "Tháng 11", "Tháng 12",
+                    "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5","Tháng 6", "Tháng 7", "Tháng 8","Tháng 9" },
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            if (monthNow == 11)
+            {
+                int yearPast = yearNow - 1;
+                return new TotalDTO(new string[] {"Tháng 11", "Tháng 12",
+                    "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5","Tháng 6", "Tháng 7", "Tháng 8","Tháng 9","Tháng 10" },
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearPast).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
+            }
+
+            return new TotalDTO(new string[] {"Tháng 12", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11"},
+                    new decimal[]
+                {
+                    orders.Where(od => od.UpdatedTime.Month == 12 && od.UpdatedTime.Year == yearNow - 1).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 1 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 2 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 3 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 4 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 5 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 6 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 7 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 8 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 9 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 10 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost),
+                    orders.Where(od => od.UpdatedTime.Month == 11 && od.UpdatedTime.Year == yearNow).Sum(od => od.TotalCost)
+                });
         }
 
         public async Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId)
