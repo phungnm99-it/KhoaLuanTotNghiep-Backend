@@ -292,12 +292,57 @@ namespace WebAPI.RepositoryService.Service
                 });
         }
 
+        public async Task<bool> CancelOrderByAdminAsync(int orderId, int adminId)
+        {
+            try
+            {
+                var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
+                if (order == null || order.Status.Equals("Đã huỷ"))
+                    return false;
+
+                if (order.ShipperId != adminId)
+                    return false;
+
+                order.Status = "Đã huỷ";
+
+                StatusUpdateOrder st = new StatusUpdateOrder()
+                {
+                    OrderId = orderId,
+                    UpdatedBy = adminId,
+                    Detail = "Admin huỷ đơn hàng",
+                    UpdatedTime = DateTime.Now
+                };
+
+                var pros = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(order.Id);
+                foreach (var item in pros)
+                {
+                    var pro = await _unitOfWork.Products.GetProductByIdAsync(item.ProductId.Value);
+                    pro.Stock += item.Quantity;
+                    _unitOfWork.Products.UpdateProduct(pro);
+                }
+
+                order.UpdatedTime = DateTime.Now;
+                order.UpdatedBy = adminId;
+                _unitOfWork.Orders.UpdateOrder(order);
+                _unitOfWork.StatusUpdateOrders.CreateStatusUpdateOrder(st);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId)
         {
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
                 if (order == null || !order.Status.Equals("Đang giao hàng"))
+                    return false;
+
+                if (order.ShipperId != shipperId)
                     return false;
 
                 order.Status = "Đã huỷ";
@@ -336,7 +381,10 @@ namespace WebAPI.RepositoryService.Service
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
+                
                 if (order == null || (!order.Status.Equals("Đặt hàng thành công") && !order.Status.Equals("Đã xác nhận")))
+                    return false;
+                if (order.UserId != userId)
                     return false;
 
                 order.Status = "Đã huỷ";

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebAPI.Repository.BrandRepository" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAFAAAAAAAAAAAAAAAAAAAAAgACAAAAAAAAQA=</HashCode>
+      <FileName>Repository\BrandRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.Repository.FeedbackRepository" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAIAAAAgAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\FeedbackRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.Repository.OrderRepository" BaseTypeListCollapsed="true">
+    <Position X="4.75" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAADAAAAA=</HashCode>
+      <FileName>Repository\OrderRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.Repository.ProductRepository" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAIAAEIAAiAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\ProductRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.Repository.ReviewRepository" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAgQAAAAAAAAAAAAgAAAAAAABIAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\ReviewRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.Repository.SubsriberRepository" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAIAAAAAAAAQAAAAAIAABAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\SubsriberRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebAPI.Repository.UserRepository" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAQAEAAAAAAAAAQBAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Repository\UserRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

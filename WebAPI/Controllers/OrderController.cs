@@ -137,6 +137,18 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, message = "Success" });
         }
 
+        [Authorize(Roles = RoleHelper.Admins)]
+        [Route("adminCancel/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> CancelOrderByAdmin(int id)
+        {
+            var user = HttpContext.Items["User"] as UserDTO;
+            var result = await _orderService.CancelOrderByShipperAsync(id, user.Id);
+            if (result == false)
+                return new ObjectResult(new { code = 401, message = "Failed" });
+            return new ObjectResult(new { code = 200, message = "Success" });
+        }
+
         [Authorize(Roles = RoleHelper.User)]
         [Route("userCancel/{id}")]
         [HttpGet]

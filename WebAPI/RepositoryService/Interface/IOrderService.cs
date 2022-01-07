@@ -25,6 +25,8 @@ namespace WebAPI.RepositoryService.Interface
         Task<List<OrderDTO>> GetOrderDeliveredByShipperAsync(int shipperId);
         Task<bool> CancelOrderByUserAsync(int orderId, int userId);
 
+        Task<bool> CancelOrderByAdminAsync(int orderId, int adminId);
+
         Task<bool> CancelOrderByShipperAsync(int orderId, int shipperId);
 
         Task<int[]> CaculateOrderAsync();
