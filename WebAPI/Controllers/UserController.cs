@@ -297,7 +297,7 @@ namespace WebAPI.Controllers
             return new ObjectResult(new { code = 200, message = "Success" });
         }
 
-        [Authorize(Roles = RoleHelper.SuperAdmin)]
+        [Authorize(Roles = RoleHelper.Admins)]
         [Route("getLockedAccount")]
         [HttpGet]
         public async Task<IActionResult> GetLockedAccountAsync()
