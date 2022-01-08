@@ -18,6 +18,7 @@ namespace WebAPI.ModelDTO
         public string PaymentMethod { get; set; }
         public DateTime OrderTime { get; set; }
         public DateTime? DeliverTime { get; set; }
+        public bool IsCompleted { get; set; }
 
         public List<OrderDetailDTO> Products { get; set; }
     }

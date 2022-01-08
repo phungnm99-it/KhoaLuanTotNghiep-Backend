@@ -297,10 +297,7 @@ namespace WebAPI.RepositoryService.Service
             try
             {
                 var order = await _unitOfWork.Orders.GetOrderByIdAsync(orderId);
-                if (order == null || order.Status.Equals("Đã huỷ"))
-                    return false;
-
-                if (order.ShipperId != adminId)
+                if (order == null || order.Status.Equals("Đã huỷ") || order.IsCompleted == true)
                     return false;
 
                 order.Status = "Đã huỷ";
@@ -650,7 +647,9 @@ namespace WebAPI.RepositoryService.Service
                     PhoneNumber = item.PhoneNumber,
                     Name = item.Name,
                     Status = item.Status,
-                    TotalCost = item.TotalCost
+                    TotalCost = item.TotalCost,
+                    OrderTime = item.OrderTime,
+                    IsCompleted = item.IsCompleted.GetValueOrDefault()
                 };
                 orderDTO.Products = new List<OrderDetailDTO>();
                 var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(orderDTO.Id);
