@@ -817,6 +817,7 @@ namespace WebAPI.RepositoryService.Service
                     Name = item.Name,
                     TotalCost = item.TotalCost,
                     OrderTime = item.OrderTime,
+                    UpdatedTime = item.UpdatedTime,
                     Status = "3"
                 };
 
@@ -861,6 +862,7 @@ namespace WebAPI.RepositoryService.Service
                     Name = item.Name,
                     TotalCost = item.TotalCost,
                     OrderTime = item.OrderTime,
+                    UpdatedTime = item.UpdatedTime,
                     Status = item.Status
                 };
 
