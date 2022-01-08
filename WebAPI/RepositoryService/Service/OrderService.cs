@@ -649,7 +649,8 @@ namespace WebAPI.RepositoryService.Service
                     Status = item.Status,
                     TotalCost = item.TotalCost,
                     OrderTime = item.OrderTime,
-                    IsCompleted = item.IsCompleted.GetValueOrDefault()
+                    IsCompleted = item.IsCompleted.GetValueOrDefault(),
+                    UpdatedTime = item.UpdatedTime
                 };
                 orderDTO.Products = new List<OrderDetailDTO>();
                 var orderDetail = await _unitOfWork.OrderDetails.GetOrderDetailByOrderIdAsync(orderDTO.Id);

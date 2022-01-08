@@ -19,6 +19,7 @@ namespace WebAPI.ModelDTO
         public DateTime OrderTime { get; set; }
         public DateTime? DeliverTime { get; set; }
         public bool IsCompleted { get; set; }
+        public DateTime? UpdatedTime { get; set; }
 
         public List<OrderDetailDTO> Products { get; set; }
     }
