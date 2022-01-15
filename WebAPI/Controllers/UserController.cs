@@ -118,6 +118,19 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = RoleHelper.SuperAdmin)]
+        [Route("resetPassword/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> ResetPasswordAsync(int id)
+        {
+            var rs = await _userService.ResetPasswordAsync(id);
+            if(rs == false)
+            {
+                return new OkObjectResult(new { code = 401, message = "Fail" });
+            }
+            return new OkObjectResult(new { code = 200, message = "Success" });
+        }
+
+        [Authorize(Roles = RoleHelper.SuperAdmin)]
         [Route("getAllShipper")]
         [HttpGet]
         public async Task<IActionResult> GetAllShipperAsync()

@@ -488,5 +488,26 @@ namespace WebAPI.RepositoryService.Service
             }
             return list;
         }
+
+        public async Task<bool> ResetPasswordAsync(int id)
+        {
+            try
+            {
+                var user = await _unitOfWork.Users.GetUserByIdAsync(id);
+                if (user == null)
+                {
+                    return false;
+                }
+
+                user.Password = _hash.GetHashPassword(user.PhoneNumber);
+                _unitOfWork.Users.UpdateUser(user);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
