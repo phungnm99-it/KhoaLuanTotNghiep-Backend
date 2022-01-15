@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 using WebAPI.ModelDTO;
 
 namespace WebAPI.RepositoryService.Interface
@@ -12,5 +13,7 @@ namespace WebAPI.RepositoryService.Interface
         Task<IEnumerable<SubscriberDTO>> GetAllSubscribersAsync();
         Task<SubscriberDTO> AddSubscriberAsync(string email);
         Task<bool> RemoveSubscriberAsync(int id);
+
+        Task<bool> SendNewsAsync(NewsModel model);
     }
 }

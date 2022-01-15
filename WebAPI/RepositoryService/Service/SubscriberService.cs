@@ -6,6 +6,8 @@ using WebAPI.Models;
 using WebAPI.ModelDTO;
 using WebAPI.RepositoryService.Interface;
 using WebAPI.UnitOfWorks;
+using WebAPI.DataModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.RepositoryService.Service
 {
@@ -76,6 +78,30 @@ namespace WebAPI.RepositoryService.Service
             _unitOfWork.Subscribers.RemoveSubscriber(sub);
             await _unitOfWork.SaveAsync();
             return true;
+        }
+
+        public async Task<bool> SendNewsAsync(NewsModel model)
+        {
+            try
+            {
+                MailRequestForBCC request = new MailRequestForBCC();
+                request.Body = model.Body;
+                request.Subject = model.Subject;
+
+                var emails = await _unitOfWork.Subscribers.FindByCondition(em => em.Status == true).ToListAsync();
+                request.ToBcc = new List<string>();
+                foreach (var em in emails)
+                {
+                    request.ToBcc.Add(em.Email);
+                }
+
+                await _mailService.SendNewsWithBccAsync(request);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

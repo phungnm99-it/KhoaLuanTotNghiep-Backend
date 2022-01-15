@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using WebAPI.DataModel;
 using WebAPI.RepositoryService.Interface;
 
 namespace WebAPI.Controllers
@@ -55,6 +56,17 @@ namespace WebAPI.Controllers
                 return new OkObjectResult(new { code = 401, message = "fail" });
 
             return new OkObjectResult(new { code = "200", message = "success" });
+        }
+
+        [Route("sendNews")]
+        [HttpPost]
+        public async Task<IActionResult> SendNewsAsync([FromForm] NewsModel model)
+        {
+            var subscriber = await service.SendNewsAsync(model);
+            if (subscriber == false)
+                return new OkObjectResult(new { code = 401, message = "fail" });
+
+            return new OkObjectResult(new { code = 200, message = "success" });
         }
     }
 }

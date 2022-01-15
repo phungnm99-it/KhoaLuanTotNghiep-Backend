@@ -405,12 +405,12 @@ namespace WebAPI.RepositoryService.Service
             var orders = await _unitOfWork.Orders.FindByCondition(od => od.ShipperId == shipperId && od.IsCompleted == true).ToListAsync();
             rs.DeliveredOrder = orders.Count();
 
-            var orders2 = await _unitOfWork.Orders.FindByCondition(od => od.ShipperId == shipperId && od.IsCompleted == false
-            && od.Status != "Đã huỷ").ToListAsync();
+            var orders2 = await _unitOfWork.Orders.FindByCondition(od => od.ShipperId == shipperId
+            && od.Status == "Đang giao hàng").ToListAsync();
             rs.DeliveringOrder = orders2.Count();
 
             var order3 = await _unitOfWork.Orders.FindByCondition(od => od.IsCompleted == false && od.Status != "Đã huỷ"
-            && od.ShipperId != shipperId).ToListAsync();
+            && od.ShipperId == null).ToListAsync();
             rs.TotalOrder = order3.Count();
 
             return rs;

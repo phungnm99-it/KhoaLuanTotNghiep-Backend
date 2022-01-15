@@ -11,4 +11,11 @@ namespace WebAPI.MailKit
         public string Subject { get; set; }
         public string Body { get; set; }
     }
+
+    public class MailRequestForBCC
+    {
+        public string Subject { get; set; }
+        public List<string> ToBcc { get; set; }
+        public string Body { get; set; }
+    }
 }

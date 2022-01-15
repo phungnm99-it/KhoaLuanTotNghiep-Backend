@@ -8,5 +8,6 @@ namespace WebAPI.MailKit
     public interface IMailService
     {
         Task SendEmailAsync(MailRequest mailRequest);
+        Task SendNewsWithBccAsync(MailRequestForBCC mailRequest);
     }
 }
