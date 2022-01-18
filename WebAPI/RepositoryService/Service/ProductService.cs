@@ -625,7 +625,7 @@ namespace WebAPI.RepositoryService.Service
         private List<ProductDTO> convertToProductDTO(List<Product> list, int page)
         {
             List<ProductDTO> result = new List<ProductDTO>();
-            if (page != 1 && page * 12 > list.Count)
+            if (page != 1 && page * 12 - 1> list.Count)
                 return result;
             for (int i = (page - 1) * 12; i < page * 12 && i < list.Count(); i++)
                 result.Add(_mapper.Map<ProductDTO>(list[i]));

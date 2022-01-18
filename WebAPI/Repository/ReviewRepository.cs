@@ -35,6 +35,7 @@ namespace WebAPI.Repository
         public async Task<IEnumerable<Review>> GetAllReviewsByProductIdAsync(int productId)
         {
             return await FindByCondition(review => review.ProductId == productId)
+                .OrderByDescending(rv => rv.ReviewTime)
                 .Include(rv => rv.Product)
                 .Include(rv => rv.User)
                 .ToListAsync();
